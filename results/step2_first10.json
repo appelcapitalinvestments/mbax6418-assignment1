@@ -1,0 +1,174 @@
+{
+  "run": {
+    "step": 2,
+    "timestamp_utc": "2026-09-10T16:27:45+00:00",
+    "endpoint": "http://dobolyi.com:9000/v1",
+    "model": "DeepSeek-V4-Flash-0731",
+    "sampling": "first 10 rows in file order"
+  },
+  "metrics": {
+    "n_attempted": 10,
+    "n_scored": 10,
+    "n_failed": 0,
+    "agreement_with_rating": 1.0,
+    "majority_class_baseline": 0.9,
+    "per_class": {
+      "POSITIVE": {
+        "n": 9,
+        "correct": 9,
+        "accuracy": 1.0
+      },
+      "NEGATIVE": {
+        "n": 1,
+        "correct": 1,
+        "accuracy": 1.0
+      }
+    },
+    "confusion_truth_by_prediction": {
+      "POSITIVE": {
+        "POSITIVE": 9,
+        "NEGATIVE": 0
+      },
+      "NEGATIVE": {
+        "POSITIVE": 0,
+        "NEGATIVE": 1
+      }
+    },
+    "rating_distribution": {
+      "5": 9,
+      "1": 1
+    }
+  },
+  "rows": [
+    {
+      "rating": 5.0,
+      "title": "Great gift",
+      "text": "Having Amazon money is always good.",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B00IX1I3G6",
+      "row_index": 0,
+      "truth": "POSITIVE",
+      "prediction": "POSITIVE",
+      "confidence": 0.9,
+      "correct": true
+    },
+    {
+      "rating": 5.0,
+      "title": "amazon gift card",
+      "text": "Always the perfect gift.  I have never given one and had someone seem or act disappointed.  Just the opposite.  They are thrilled and excited to have a bit of a spree.  Always the perfect size and color!  Arrives in 1 day in most cases.  So it's never too late!  Lots of cards to chose from... thank you... birthday... wedding..baby..  and many that work for many occasions...",
+      "verified_purchase": false,
+      "helpful_vote": 0,
+      "asin": "B005ESMMWW",
+      "row_index": 1,
+      "truth": "POSITIVE",
+      "prediction": "POSITIVE",
+      "confidence": 0.98,
+      "correct": true
+    },
+    {
+      "rating": 5.0,
+      "title": "perfect gift",
+      "text": "When you have a person who is hard to shop for.. an amazon gift card is P E R F E C T.  Man or woman...  No matter what their hobby... lifestyle.. or age.  All you have to do is pick the $.  Don't forget to mention that it is a GIFT when you check out - you will have some gift card options.  I've ordered many of these over years.  They are always received with glee.  Woo hoo!  If you're looking for a great fit for me - this is just my size!  :)  Best to all!",
+      "verified_purchase": true,
+      "helpful_vote": 27,
+      "asin": "B01K8RIM5Y",
+      "row_index": 2,
+      "truth": "POSITIVE",
+      "prediction": "POSITIVE",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "rating": 5.0,
+      "title": "Nice looking",
+      "text": "The tin is a nice touch and pretty large.  It's about 4&#34; in diameter and about 1/2&#34; thick.  I added a pretty red ribbon and it is perfect.  Who doesn't love shopping on Amazon? Arrived quickly, I have Prime... but I think they ship the gift cards out SUPER fast... like over night. In case you need it for a FAST gift.",
+      "verified_purchase": false,
+      "helpful_vote": 0,
+      "asin": "B0091JKVU0",
+      "row_index": 3,
+      "truth": "POSITIVE",
+      "prediction": "POSITIVE",
+      "confidence": 0.95,
+      "correct": true
+    },
+    {
+      "rating": 1.0,
+      "title": "Not $10 Gift Cards",
+      "text": "I bought this pack of Starbucks Gift cards in 2019. Ive given them to friends and I gave 2 to my daughter.<br />My daughter used one recently and it had $6.52 on the card not $10.00. She had the cashier check the balance of the other card and it had $5.32 on it! She had forgotten that she had these gift cards, so yes, 2 years later decided to use the when she found them! Do they decline in value? And then both had random amounts on them! I'm embarrassed now to have given them as gifts! Friends receiving the gift card aren't going to tell you that weren't able to cover their order with the card you gave them!!!",
+      "verified_purchase": true,
+      "helpful_vote": 2,
+      "asin": "B00FTGTM5E",
+      "row_index": 4,
+      "truth": "NEGATIVE",
+      "prediction": "NEGATIVE",
+      "confidence": 0.95,
+      "correct": true
+    },
+    {
+      "rating": 5.0,
+      "title": "Cute!",
+      "text": "That snowman tin is adorable",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B072L7GTF5",
+      "row_index": 5,
+      "truth": "POSITIVE",
+      "prediction": "POSITIVE",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "rating": 5.0,
+      "title": "Easy gift",
+      "text": "Great and easy gift",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B00IX1I3G6",
+      "row_index": 6,
+      "truth": "POSITIVE",
+      "prediction": "POSITIVE",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "rating": 5.0,
+      "title": "Great gift",
+      "text": "Super cute nice quality tin<br />Your choose amount",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B072P5VV4D",
+      "row_index": 7,
+      "truth": "POSITIVE",
+      "prediction": "POSITIVE",
+      "confidence": 0.9,
+      "correct": true
+    },
+    {
+      "rating": 5.0,
+      "title": "Gifts for my two granddaughters",
+      "text": "They love it !!",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B072P5VV4D",
+      "row_index": 8,
+      "truth": "POSITIVE",
+      "prediction": "POSITIVE",
+      "confidence": 1.0,
+      "correct": true
+    },
+    {
+      "rating": 5.0,
+      "title": "Great for saying \u201cthank you\u201d to the mail person, farrier, yard man,etc",
+      "text": "So many people<br />Make your life better so remember them!",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B071NM2PNL",
+      "row_index": 9,
+      "truth": "POSITIVE",
+      "prediction": "POSITIVE",
+      "confidence": 0.9,
+      "correct": true
+    }
+  ]
+}
