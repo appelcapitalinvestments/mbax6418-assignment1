@@ -1,0 +1,6 @@
+.env
+.env.*
+*.jsonl.gz
+.venv/
+__pycache__/
+.DS_Store
