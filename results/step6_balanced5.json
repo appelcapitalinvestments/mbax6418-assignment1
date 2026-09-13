@@ -1,0 +1,427 @@
+{
+  "run": {
+    "steps": [
+      5,
+      6
+    ],
+    "timestamp_utc": "2026-09-13T18:28:41+00:00",
+    "endpoint": "http://dobolyi.com:9000/v1",
+    "model": "DeepSeek-V4-Flash-0731",
+    "sampling": "reservoir-sampled 5 per class from the full file",
+    "seed": 6418,
+    "classes": [
+      "POSITIVE",
+      "NEUTRAL",
+      "NEGATIVE"
+    ],
+    "emotions": [
+      "anger",
+      "anticipation",
+      "disgust",
+      "fear",
+      "joy",
+      "sadness",
+      "surprise",
+      "trust"
+    ]
+  },
+  "metrics": {
+    "n_attempted": 15,
+    "n_scored": 15,
+    "n_failed": 0,
+    "agreement_with_rating": 0.8,
+    "majority_class_baseline": 0.3333333333333333,
+    "per_class": {
+      "POSITIVE": {
+        "n": 5,
+        "correct": 4,
+        "accuracy": 0.8
+      },
+      "NEUTRAL": {
+        "n": 5,
+        "correct": 3,
+        "accuracy": 0.6
+      },
+      "NEGATIVE": {
+        "n": 5,
+        "correct": 5,
+        "accuracy": 1.0
+      }
+    },
+    "confusion_truth_by_prediction": {
+      "POSITIVE": {
+        "POSITIVE": 4,
+        "NEUTRAL": 1,
+        "NEGATIVE": 0
+      },
+      "NEUTRAL": {
+        "POSITIVE": 0,
+        "NEUTRAL": 3,
+        "NEGATIVE": 2
+      },
+      "NEGATIVE": {
+        "POSITIVE": 0,
+        "NEUTRAL": 0,
+        "NEGATIVE": 5
+      }
+    },
+    "rating_distribution": {
+      "5": 4,
+      "4": 1,
+      "3": 5,
+      "2": 1,
+      "1": 4
+    },
+    "emotion": {
+      "n_comparable": 4,
+      "n_agree": 0,
+      "agreement_rate": 0.0,
+      "nrc_no_answer": 11,
+      "llm_distribution": {
+        "anger": 5,
+        "sadness": 5,
+        "joy": 4,
+        "trust": 1
+      },
+      "nrc_distribution": {
+        "anticipation": 3,
+        "joy": 1
+      },
+      "top_disagreements": [
+        {
+          "llm": "sadness",
+          "nrc": "anticipation",
+          "n": 2
+        },
+        {
+          "llm": "anger",
+          "nrc": "anticipation",
+          "n": 1
+        },
+        {
+          "llm": "sadness",
+          "nrc": "joy",
+          "n": 1
+        }
+      ]
+    }
+  },
+  "rows": [
+    {
+      "rating": 1.0,
+      "title": "Envelopes don't fit!!",
+      "text": "The envelopes were too small for the cards to fit!!  I had to cut the cards down.  Come on Amazon, you can do better.",
+      "verified_purchase": true,
+      "helpful_vote": 2,
+      "asin": "B00X0EVOEY",
+      "row_index": 74942,
+      "truth": "NEGATIVE",
+      "prediction": "NEGATIVE",
+      "llm_emotion": "anger",
+      "confidence": 0.95,
+      "correct": true,
+      "nrc_emotion": null,
+      "nrc_scores": {},
+      "emotions_agree": null
+    },
+    {
+      "rating": 5.0,
+      "title": "gift card",
+      "text": "great way to give a gift",
+      "verified_purchase": false,
+      "helpful_vote": 0,
+      "asin": "B0091JKFG0",
+      "row_index": 48761,
+      "truth": "POSITIVE",
+      "prediction": "POSITIVE",
+      "llm_emotion": "joy",
+      "confidence": 0.9,
+      "correct": true,
+      "nrc_emotion": null,
+      "nrc_scores": {
+        "anticipation": 2,
+        "joy": 2,
+        "surprise": 2
+      },
+      "emotions_agree": null
+    },
+    {
+      "rating": 1.0,
+      "title": "Very disappointed with Amazon (for the first time in many years ...",
+      "text": "Very disappointed with Amazon (for the first time in many years of buying everything and anything from you).  I deliberately paid for a tin and gift wrapping for the gift cards, also selecting the option that states that the item is clearly a gift so that my daughter and her husband would get a surprise and have a parcel to put under the Christmas tree, but on receiving the two packages they were provided with an Amazon receipt which stated that there were two gift cards worth $150 each inside!!!",
+      "verified_purchase": false,
+      "helpful_vote": 2,
+      "asin": "B0091JKYWU",
+      "row_index": 137873,
+      "truth": "NEGATIVE",
+      "prediction": "NEGATIVE",
+      "llm_emotion": "sadness",
+      "confidence": 0.95,
+      "correct": true,
+      "nrc_emotion": null,
+      "nrc_scores": {
+        "anger": 3,
+        "anticipation": 8,
+        "disgust": 3,
+        "fear": 1,
+        "joy": 8,
+        "sadness": 2,
+        "surprise": 7,
+        "trust": 1
+      },
+      "emotions_agree": null
+    },
+    {
+      "rating": 3.0,
+      "title": "3 gift cards",
+      "text": "I ordered 3 cards 2 for 10 and 1 for 20. they all look the same and I don't know which one is the 20 dollar card.",
+      "verified_purchase": true,
+      "helpful_vote": 1,
+      "asin": "B01LXGGQXW",
+      "row_index": 136883,
+      "truth": "NEUTRAL",
+      "prediction": "NEGATIVE",
+      "llm_emotion": "anger",
+      "confidence": 0.9,
+      "correct": false,
+      "nrc_emotion": null,
+      "nrc_scores": {
+        "anticipation": 1,
+        "joy": 1,
+        "surprise": 1
+      },
+      "emotions_agree": null
+    },
+    {
+      "rating": 3.0,
+      "title": "Three Stars",
+      "text": "alittle pain in the ass but good",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B00IX1I3G6",
+      "row_index": 9073,
+      "truth": "NEUTRAL",
+      "prediction": "NEUTRAL",
+      "llm_emotion": "anger",
+      "confidence": 0.6,
+      "correct": true,
+      "nrc_emotion": null,
+      "nrc_scores": {
+        "anticipation": 1,
+        "fear": 1,
+        "joy": 1,
+        "sadness": 1,
+        "surprise": 1,
+        "trust": 1
+      },
+      "emotions_agree": null
+    },
+    {
+      "rating": 1.0,
+      "title": "Don't get Amazon gift cards!!",
+      "text": "We got a bunch of cards in various monetary value for Christmas gifts. Never ever ever ever again. They all came and none were labelled with the value, so we didn't know which was which. We loved it up on Amazon and it said to look under \"orders\" to find the serial number for each card and then match it up with the cars to figure it the value. Annoying, but ok, we could do that. Except there were no serial numbers on the website. Or on the app. Or on the receipt from the box. Or anywhere else we looked. We even tried scanning the cards with the app - nope. So I had to call Amazon and wait on hold to talk with someone. That person then couldn't figure out the issue no matter how many ways I explained it, so after quite a while I agreed to talk with a supervisor. On hold again... Finally I got the value of the cards. I had to read off the entire 16 digit serial number of each card to the supervisor in order to get it. She confirmed that there was no other way to have done it.<br />I hope the people on our list enjoy their Amazon cards this year because they will never be getting another one!",
+      "verified_purchase": true,
+      "helpful_vote": 38,
+      "asin": "B06WVJBLBQ",
+      "row_index": 127247,
+      "truth": "NEGATIVE",
+      "prediction": "NEGATIVE",
+      "llm_emotion": "anger",
+      "confidence": 0.95,
+      "correct": true,
+      "nrc_emotion": "anticipation",
+      "nrc_scores": {
+        "anger": 1,
+        "anticipation": 9,
+        "disgust": 1,
+        "joy": 4,
+        "surprise": 3,
+        "trust": 6
+      },
+      "emotions_agree": false
+    },
+    {
+      "rating": 2.0,
+      "title": "Paper egg presentation damaged",
+      "text": "Looked nice but paper egg was damaged.  Pattern off edges, marks all over.  Wouldn\u2019t have bought this in a store.  Gave this to a child and they don\u2019t care.  Would never have given this to an adult.",
+      "verified_purchase": true,
+      "helpful_vote": 1,
+      "asin": "B016J1LGPG",
+      "row_index": 75394,
+      "truth": "NEGATIVE",
+      "prediction": "NEGATIVE",
+      "llm_emotion": "sadness",
+      "confidence": 0.9,
+      "correct": true,
+      "nrc_emotion": "anticipation",
+      "nrc_scores": {
+        "anticipation": 2,
+        "joy": 1,
+        "trust": 1
+      },
+      "emotions_agree": false
+    },
+    {
+      "rating": 3.0,
+      "title": "Cute but not te best",
+      "text": "It's super adorable for a wedding gift! But there is no dollar amount and no place to enter anywhere on the card, or box. I think it could be better, but still really beautiful gift.",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B06ZY44YG4",
+      "row_index": 127948,
+      "truth": "NEUTRAL",
+      "prediction": "NEUTRAL",
+      "llm_emotion": "sadness",
+      "confidence": 0.8,
+      "correct": true,
+      "nrc_emotion": "joy",
+      "nrc_scores": {
+        "anticipation": 2,
+        "joy": 4,
+        "surprise": 2
+      },
+      "emotions_agree": false
+    },
+    {
+      "rating": 4.0,
+      "title": "Four Stars",
+      "text": "Christmas gift",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B00BXLSJ44",
+      "row_index": 45216,
+      "truth": "POSITIVE",
+      "prediction": "NEUTRAL",
+      "llm_emotion": "trust",
+      "confidence": 0.7,
+      "correct": false,
+      "nrc_emotion": null,
+      "nrc_scores": {
+        "anticipation": 1,
+        "joy": 1,
+        "surprise": 1
+      },
+      "emotions_agree": null
+    },
+    {
+      "rating": 5.0,
+      "title": "Easy Peasy!",
+      "text": "An easy process whether it be for yourself or as a gift!",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B00IX1I3G6",
+      "row_index": 52113,
+      "truth": "POSITIVE",
+      "prediction": "POSITIVE",
+      "llm_emotion": "joy",
+      "confidence": 0.9,
+      "correct": true,
+      "nrc_emotion": null,
+      "nrc_scores": {
+        "anticipation": 1,
+        "joy": 1,
+        "surprise": 1
+      },
+      "emotions_agree": null
+    },
+    {
+      "rating": 5.0,
+      "title": "Five Stars",
+      "text": "great gift for a loved one at Christmas",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B00NVUC1OO",
+      "row_index": 119918,
+      "truth": "POSITIVE",
+      "prediction": "POSITIVE",
+      "llm_emotion": "joy",
+      "confidence": 0.95,
+      "correct": true,
+      "nrc_emotion": null,
+      "nrc_scores": {
+        "anticipation": 1,
+        "joy": 1,
+        "surprise": 1
+      },
+      "emotions_agree": null
+    },
+    {
+      "rating": 3.0,
+      "title": "Santa Gift Card Box",
+      "text": "Great gift card presentation device.  However, the paint on edges of the lids was marred/chipped.  Ordered replacements still not perfect.",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B0091JKY0M",
+      "row_index": 137863,
+      "truth": "NEUTRAL",
+      "prediction": "NEUTRAL",
+      "llm_emotion": "sadness",
+      "confidence": 0.8,
+      "correct": true,
+      "nrc_emotion": null,
+      "nrc_scores": {
+        "anticipation": 3,
+        "joy": 3,
+        "surprise": 2,
+        "trust": 1
+      },
+      "emotions_agree": null
+    },
+    {
+      "rating": 5.0,
+      "title": "Accepted with No questions",
+      "text": "Worked Great! No issues, accepted with no questions",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B07H4VJ8SQ",
+      "row_index": 80779,
+      "truth": "POSITIVE",
+      "prediction": "POSITIVE",
+      "llm_emotion": "joy",
+      "confidence": 0.95,
+      "correct": true,
+      "nrc_emotion": null,
+      "nrc_scores": {},
+      "emotions_agree": null
+    },
+    {
+      "rating": 1.0,
+      "title": "Decorative tin is banged up",
+      "text": "The tin came with a dent in it. Verified serial matches so hoping it is fine but won't know for while as it is a christmas gift.",
+      "verified_purchase": true,
+      "helpful_vote": 1,
+      "asin": "B0866T7KRX",
+      "row_index": 65332,
+      "truth": "NEGATIVE",
+      "prediction": "NEGATIVE",
+      "llm_emotion": "sadness",
+      "confidence": 0.9,
+      "correct": true,
+      "nrc_emotion": "anticipation",
+      "nrc_scores": {
+        "anticipation": 2,
+        "joy": 1,
+        "surprise": 1,
+        "trust": 1
+      },
+      "emotions_agree": false
+    },
+    {
+      "rating": 3.0,
+      "title": "Dollar value",
+      "text": "Card value was not provided anywhere on card or envelope.",
+      "verified_purchase": true,
+      "helpful_vote": 0,
+      "asin": "B06WVJBLBQ",
+      "row_index": 58816,
+      "truth": "NEUTRAL",
+      "prediction": "NEGATIVE",
+      "llm_emotion": "anger",
+      "confidence": 0.8,
+      "correct": false,
+      "nrc_emotion": null,
+      "nrc_scores": {},
+      "emotions_agree": null
+    }
+  ]
+}

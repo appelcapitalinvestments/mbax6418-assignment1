@@ -92,9 +92,38 @@ API_KEY = _require("CLASS_API_KEY")
 
 TEMPERATURE = 0.0
 SEED = 6418
-MAX_TOKENS = 512
 
-client = OpenAI(base_url=BASE_URL, api_key=API_KEY)
+# 512 was too small and the failure it caused was not random. This endpoint
+# serves a reasoning model: it emits chain-of-thought into a separate field
+# before writing `content`, and that thinking is billed against the same
+# max_tokens budget. When the budget ran out mid-thought the reply came back
+# with empty content and the row was recorded as a failure.
+#
+# The Sep 13 balanced run lost 13 of 150 rows that way, and 7 of those 13 were
+# 3-star reviews — the class the model already finds hardest and therefore
+# thinks longest about. Dropping the hardest cases from the denominator
+# inflates every accuracy figure computed from what survives. That is a
+# non-random missingness problem, not a nuisance.
+#
+# max_tokens is a ceiling, not a target: raising it costs nothing on calls that
+# already answered, and only buys headroom on the ones that were truncated.
+MAX_TOKENS = 2048
+
+# Timeout and retries are set explicitly. The library's default is 600 seconds
+# per request with 2 automatic retries, which means one unresponsive call can
+# sit there for half an hour looking exactly like a frozen terminal. On a
+# 150-review loop against an endpoint that has already had an outage this week,
+# that is not a theoretical problem. 60 seconds is generous for a single short
+# classification; anything slower is a stall, not slowness.
+REQUEST_TIMEOUT = 60.0
+MAX_RETRIES = 2
+
+client = OpenAI(
+    base_url=BASE_URL,
+    api_key=API_KEY,
+    timeout=REQUEST_TIMEOUT,
+    max_retries=MAX_RETRIES,
+)
 
 
 # --------------------------------------------------------------------------
@@ -169,9 +198,17 @@ def classify_review(title: str, text: str) -> ReviewAnalysis:
     # contaminate the predictions with it.
     raw = (message.content or "").strip()
     if not raw:
+        # Say *why* rather than guessing. finish_reason="length" is proof the
+        # budget ran out; anything else means something different went wrong.
+        finish = getattr(response.choices[0], "finish_reason", "unknown")
+        usage = getattr(response, "usage", None)
+        used = getattr(usage, "completion_tokens", "?") if usage else "?"
         raise ValueError(
-            "Model returned empty content. If this endpoint is a reasoning "
-            "model, the token budget was likely spent thinking. Raise MAX_TOKENS."
+            f"Model returned empty content (finish_reason={finish}, "
+            f"completion_tokens={used}/{MAX_TOKENS}). "
+            + ("The token budget was spent on reasoning before any answer was "
+               "written. Raise MAX_TOKENS." if finish == "length"
+               else "Budget was not exhausted, so this is not a max_tokens problem.")
         )
 
     try:

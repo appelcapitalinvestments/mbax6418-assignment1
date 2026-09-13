@@ -6,6 +6,19 @@
 # Data — large and re-downloadable
 *.jsonl.gz
 
+# NRC Word-Emotion Association Lexicon — licence forbids redistribution.
+# "Do not redistribute the data. Direct interested parties to the lexicon
+# home page."  https://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm
+NRC-Emotion-Lexicon*
+NRC-emotion-lexicon*
+nrc_emotion_lexicon*
+
+# Test fixtures — synthetic, never a real run, must not be mistaken for results
+results/_fixture_*.json
+
+# Mid-run checkpoints. Transient, and a partial run is not a result.
+results/.step6_partial*.json
+
 # Python
 .venv/
 __pycache__/
