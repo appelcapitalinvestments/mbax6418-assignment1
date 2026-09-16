@@ -1,12 +1,12 @@
 """
-MBAX 6418 — Assignment 1, Step 2
+MBAX 6418 - Assignment 1, Step 2
 Score a 100-row first batch against the star rating.
 
 The assignment's requirements for this step:
-  - "Score a 100-row first batch and see how the model does against the
+- "Score a 100-row first batch and see how the model does against the
      'correct answer' you work out from the rating (>=4 positive, else negative)."
-  - "The model must never see the rating - it's only for checking afterwards."
-  - "at minimum, be able to say how often the model agrees with the rating,
+- "The model must never see the rating - it's only for checking afterwards."
+- "at minimum, be able to say how often the model agrees with the rating,
      which reviews it gets wrong, and a feel for how often it's right on each class."
 
 Everything is written to results/ as JSON. That file is the evidence base for

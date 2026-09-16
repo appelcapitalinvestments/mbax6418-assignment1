@@ -1,5 +1,5 @@
 """
-MBAX 6418 — endpoint sanity check.
+MBAX 6418 - endpoint sanity check.
 
 Answers three questions before any real run:
   1. Is the endpoint reachable and does the key work?

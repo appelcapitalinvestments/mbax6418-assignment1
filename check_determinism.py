@@ -1,12 +1,12 @@
 """
-MBAX 6418 — Assignment 1, reproducibility check
+MBAX 6418 - Assignment 1, reproducibility check
 
 The assignment requires that "results must be repeatable via a fixed seed and
 fixed settings." `temperature=0.0` and `seed=6418` are both set, so in
 principle every run should return the same answers.
 
 They do not. Two consecutive runs of score3.py on Sep 13 produced different
-predictions for the same reviews — one 3-star review came back NEUTRAL in the
+predictions for the same reviews - one 3-star review came back NEUTRAL in the
 first run and NEGATIVE in the second, and several reviews changed their
 primary emotion. This script measures how often that happens instead of
 leaving it as an anecdote.
@@ -95,7 +95,7 @@ def main() -> None:
 
     print("\n" + "=" * 62)
     if not (sent_diff or emo_diff or conf_diff):
-        print("No differences. Output was reproducible on this run — but a single")
+        print("No differences. Output was reproducible on this run - but a single")
         print("clean comparison does not prove determinism, it only failed to")
         print("catch it. Report the sample size alongside the result.")
     else:

@@ -1,6 +1,6 @@
 # Review Sentiment & Emotion Classifier
 
-**MBAX 6418 — Assignment 1 · Jacob Appel**
+**MBAX 6418 - Assignment 1 · Jacob Appel**
 
 ### How this report was produced
 
@@ -9,8 +9,8 @@ explicit about how that went rather than leaving it implied.
 
 The agent (Claude Opus 5, driven through Hermes Agent and Claude Code) wrote
 the code, ran the analysis, and drafted this report. I directed the work,
-made the judgement calls — three classes over two, the diverging palette, port
-9000 over 9001, reporting the rating leak instead of filtering it — and checked
+made the judgement calls - three classes over two, the diverging palette, port
+9000 over 9001, reporting the rating leak instead of filtering it - and checked
 the output.
 
 **Two things are worth stating because they cut against the agent:**
@@ -39,8 +39,8 @@ The numbers below are the run's, verified. The framing is mine.
 ![Headline figures and per-class accuracy](screenshots/01-headline.png)
 
 *Agreement against the majority-class baseline, then accuracy within each true
-class. The three sentiment classes use a diverging encoding — blue, gray, red —
-because sentiment is polarity data, not an arbitrary set of categories.*
+class. The three sentiment classes use a diverging encoding - blue, gray, red
+- because sentiment is polarity data, not an arbitrary set of categories.*
 
 ![Confusion matrix](screenshots/02-confusion-matrix.png)
 
@@ -72,9 +72,9 @@ contrast and CVD checks.*
 
 Classifies Amazon Gift Card reviews on two dimensions at once:
 
-- **Sentiment** — POSITIVE / NEUTRAL / NEGATIVE, judged from the review text
+- **Sentiment** - POSITIVE / NEUTRAL / NEGATIVE, judged from the review text
   alone, then scored against the star rating the reviewer left.
-- **Primary emotion** — one of the eight NRC emotions, produced two independent
+- **Primary emotion** - one of the eight NRC emotions, produced two independent
   ways: once by the model, and once by a word list with no model involved.
 
 The model never sees the star rating. It is held back and used only as the
@@ -105,11 +105,12 @@ pole.
 
 ## Data
 
-**Amazon Reviews '23**, Gift Cards category — McAuley Lab, UC San Diego.
+**Amazon Reviews '23**, Gift Cards category - McAuley Lab, UC San Diego.
 <https://amazon-reviews-2023.github.io>
-File: `mcauleylab.ucsd.edu/public_datasets/data/amazon_2023/raw/review_categories/Gift_Cards.jsonl.gz`
+File: `mcauleylab.ucsd.edu/public_datasets/data/amazon_2023/raw/review_categor
+ies/Gift_Cards.jsonl.gz`
 
-`data.py` downloads and caches it on first run. Gitignored — large and
+`data.py` downloads and caches it on first run. Gitignored - large and
 re-fetchable.
 
 **NRC Word-Emotion Association Lexicon** (Mohammad & Turney).
@@ -144,7 +145,7 @@ word-level file yourself and place it in this directory; it is gitignored.
 > `class-endpoints.txt` labels **Hermes Primary Model** on **:9000**; that same
 > file lists `:9001` as serving a **vision** model
 > (`cyankiwi/Qwen3.6-35B-A3B-AWQ-4bit`), not the text model this task needs;
-> and both were tested directly — `:9000` returns clean JSON with
+> and both were tested directly - `:9000` returns clean JSON with
 > `cached_tokens` reported, while `:9001` injects an ~80-token system prompt and
 > returns a separate reasoning field. Both are OpenAI-compatible, which is the
 > brief's actual requirement. `check_endpoint.py` and `CLASS_BASE_URL` in
@@ -164,7 +165,7 @@ python dashboard.py           # builds dashboard.html from that file
 open dashboard.html
 ```
 
-Interrupting `score3.py` is safe — progress is checkpointed per review and
+Interrupting `score3.py` is safe - progress is checkpointed per review and
 re-running resumes.
 
 ---
@@ -180,17 +181,17 @@ unconditionally and read nothing would score **88.5%**.
 The Step 2 run made this concrete. Reading the first 100 rows in order gave 93
 POSITIVE and 7 NEGATIVE, and under that split the binary classifier scored
 **99.0% agreement (98 of 99 scored, 1 unusable) against a 92.9% majority-class
-baseline** — a margin of **6.1 points**. Read the 99.0% alone and the model
+baseline** - a margin of **6.1 points**. Read the 99.0% alone and the model
 looks close to perfect. Read it against the baseline and most of the apparent
 skill is the sample's shape, not the model's.
 
-Balanced sampling drops the baseline to **33.3%** — one third, because each
+Balanced sampling drops the baseline to **33.3%** - one third, because each
 class contributes exactly 50 reviews. Measured agreement fell to **71.3%**, but
 the *margin over baseline* rose from **6.1 points to 38.0 points**. The model
 did not get worse. The measurement stopped flattering it.
 
 Balanced sampling also made NEUTRAL visible at all. At its natural 2.1% rate, a
-150-review random sample would contain about three 3-star reviews — too few to
+150-review random sample would contain about three 3-star reviews - too few to
 notice that the model cannot classify them. Reservoir sampling put 50 in front
 of it, and the failure became impossible to miss.
 
@@ -209,11 +210,11 @@ reviews. Of the 50 3-star reviews:
 
 - **26 (52%) called NEGATIVE**
 - 12 (24%) called POSITIVE
-- 12 (24%) called NEUTRAL — correct
+- 12 (24%) called NEUTRAL - correct
 
 The direction is asymmetric: when the model abandons NEUTRAL it goes NEGATIVE
 more than twice as often as POSITIVE. A mixed review that mentions any concrete
-problem — a dented tin, a late delivery, a fee — reads as a complaint, and a
+problem - a dented tin, a late delivery, a fee - reads as a complaint, and a
 complaint reads as NEGATIVE regardless of how mild it is.
 
 **Nothing crosses the full width.** Zero POSITIVE reviews were called NEGATIVE
@@ -221,7 +222,7 @@ and zero NEGATIVE reviews were called POSITIVE. Every single error is one step
 on the scale. The model's *ordering* is essentially perfect; only its
 *thresholds* for the middle band are wrong.
 
-#### The matrix alone is misleading — split recall from precision
+#### The matrix alone is misleading - split recall from precision
 
 Reading only the rows gives the impression the model cannot recognise a mixed
 review. Reading the columns says something quite different:
@@ -232,14 +233,14 @@ review. Reading the columns says something quite different:
 | NEUTRAL | 17 | 12 | **70.6%** | 24.0% |
 | NEGATIVE | 72 | 46 | 63.9% | **92.0%** |
 
-**When the model does say NEUTRAL, it is right 7 times in 10 — better precision
+**When the model does say NEUTRAL, it is right 7 times in 10 - better precision
 than it manages on NEGATIVE.** Its problem is not recognition, it is
 willingness. It issues NEUTRAL 17 times in 150 (11.3%) when the true rate is
 33%, so it is under-committing to a label it can actually apply correctly.
 
 That flips the diagnosis. "The model is bad at neutral" is wrong. **The model
 is conservative about neutral, and the cost is recall.** The two poles show the
-mirror image: 98.0% and 92.0% recall bought with 80.3% and 63.9% precision —
+mirror image: 98.0% and 92.0% recall bought with 80.3% and 63.9% precision -
 it over-predicts NEGATIVE 72 times against a true 50, absorbing most of the
 3-star row.
 
@@ -262,7 +263,7 @@ well-calibrated. On NEUTRAL it runs backwards:
 
 On a 3-star review the model is **more confident when it is wrong than when it
 is right**. Its hedging instinct fires when it correctly identifies a mixed
-review and switches off when it wrongly collapses one into a pole — because
+review and switches off when it wrongly collapses one into a pole - because
 collapsing to a pole *is* the confident-feeling answer.
 
 The practical consequence: **26 of the 43 errors carried confidence ≥ 0.90, and
@@ -273,7 +274,7 @@ a filter would help, using it would actively select for the wrong answers.
 
 ### 3. How do the LLM's emotions and the word list's differ, and why?
 
-**They agree on 14 of 57 comparable reviews — 24.6%.** And "comparable" is
+**They agree on 14 of 57 comparable reviews - 24.6%.** And "comparable" is
 doing heavy lifting: the word list produced **no answer at all on 93 of 150
 reviews (62%)**, because it found no lexicon word or hit a tie.
 
@@ -288,8 +289,8 @@ reviews (62%)**, because it found no lexicon word or hit a tie.
 | anticipation | 3 | **24** |
 | fear | 1 | 1 |
 
-The distributions barely overlap, and the single largest disagreement —
-**anger → anticipation, 16 times** — has a mechanical cause that is worth
+The distributions barely overlap, and the single largest disagreement -
+**anger → anticipation, 16 times** - has a mechanical cause that is worth
 stating precisely:
 
 > In the NRC lexicon, the word **"gift"** is tagged anticipation, joy, surprise
@@ -305,7 +306,7 @@ The two methods are not measuring the same thing and neither is broken:
 - The **model** judges the reviewer's stance toward the purchase.
 
 The 62% no-answer rate is the other half of the finding. Gift-card reviews are
-short — "Great", "Reload", "Thanks", "...", "?", "🙂" — and a lexicon method
+short - "Great", "Reload", "Thanks", "...", "?", "🙂" - and a lexicon method
 needs vocabulary to count. On this dataset it has almost nothing to work with,
 and reporting a tie or a miss as "no answer" rather than guessing is what makes
 that visible instead of hidden.
@@ -316,7 +317,7 @@ Four worth reporting. Full detail in `notes.md`.
 
 **a) A truncated reasoning budget was silently deleting the model's NEUTRAL
 answers.** The first balanced run scored only 137 of 150. All 13 failures were
-the same error — empty `content` — because this is a reasoning model that
+the same error - empty `content` - because this is a reasoning model that
 writes chain-of-thought before its answer, and `max_tokens=512` was being spent
 on thinking.
 
@@ -325,7 +326,7 @@ thinks longest about the reviews it finds hardest, so truncation removed the
 hardest cases first, concentrated in the worst-performing class. NEUTRAL's
 accuracy was being computed over the 43 that survived.
 
-Raising `max_tokens` to 2048 recovered all 13 — and the result was the opposite
+Raising `max_tokens` to 2048 recovered all 13 - and the result was the opposite
 of what was predicted:
 
 | | max_tokens 512 | max_tokens 2048 |
@@ -339,7 +340,7 @@ of what was predicted:
 Arriving at NEUTRAL takes more deliberation than arriving at a pole, so the
 token ceiling was systematically censoring one specific answer. NEUTRAL
 accuracy more than doubled with no change to the prompt, the model, or the
-sample — only the room to think. Overall agreement moved 0.5 points, which is
+sample - only the room to think. Overall agreement moved 0.5 points, which is
 why an aggregate number is a poor instrument for detecting this.
 
 **b) Output is not fully reproducible, despite a fixed seed and temperature 0.**
@@ -351,7 +352,7 @@ The seed is not the problem. vLLM batches concurrent requests, batch
 composition changes the order of floating-point reductions inside the kernels,
 and different summation order shifts logits slightly. Near a decision boundary
 that is enough to flip the argmax even at temperature 0. Batch composition
-depends on what else is hitting the shared class endpoint — other students. The
+depends on what else is hitting the shared class endpoint - other students. The
 seed governs sampling and cannot reach any of that.
 
 `check_determinism.py` measures the rate rather than asserting it: the same
@@ -365,11 +366,11 @@ reviews:
 | Confidence value | **6 / 17 (35.3%)** |
 
 The emotion changes were `joy → sadness`, `sadness → disgust`, and
-`sadness → anger` — each a plausible reading of a mixed review, which is the
+`sadness → anger` - each a plausible reading of a mixed review, which is the
 point: instability shows up exactly where the decision is close.
 
 **This refines the claim rather than confirming it.** Sentiment held steady
-across all 17, so the sentiment flip rate is low — but it is not zero, because
+across all 17, so the sentiment flip rate is low - but it is not zero, because
 two sentiment flips were directly observed between the earlier pair of full
 runs. 17 reviews cannot detect a rate of a few percent. The defensible
 statement is that **sentiment is mostly stable and emotion and confidence are
@@ -379,15 +380,15 @@ a fixed seed and fixed settings" is not met.
 **One review still exhausted 2048 tokens** (`finish_reason=length,
 completion_tokens=2048/2048`). Raising the ceiling reduced the truncation
 problem from 13 rows in 150 to roughly 1 in 18 on this small sample; it did not
-eliminate it. The improved error message is what makes that legible — it
+eliminate it. The improved error message is what makes that legible - it
 reports the finish reason and the token count instead of inviting a guess.
 
 **c) The endpoint went down and the deadline moved.** Class endpoints failed
 from Friday evening; Dobolyi posted a workaround and extended the deadline from
 Sep 13 to Sep 15. Two consequences for this code: an explicit 60-second timeout
-replaced the library default of 600 seconds with 2 retries — under which a
+replaced the library default of 600 seconds with 2 retries - under which a
 single stalled call is indistinguishable from a frozen terminal for up to half
-an hour — and `score3.py` now checkpoints after every review, so an interrupt
+an hour - and `score3.py` now checkpoints after every review, so an interrupt
 costs one review instead of twenty minutes.
 
 **d) Two rendering bugs the fixture could not catch.** The dashboard was
@@ -417,12 +418,12 @@ errors look defensible next to the rating:
 | 3★ | *"A perfect find the right price Excellent! very good product"* / "Happy with this purchase. Great product." | POSITIVE (0.98) |
 | 3★ | *"good"* / "not bad" | POSITIVE (0.70) |
 | 3★ | *"Convenient"* / "Simplifies making purchases." | POSITIVE |
-| 3★ | *"excelente"* / "siempre me resulta de ayuda…" | POSITIVE (0.95) |
+| 3★ | *"excelente"* / "siempre me resulta de ayuda..." | POSITIVE (0.95) |
 | 3★ | *"Did not receive the amount I chose."* | NEGATIVE (0.90) |
 
 Read the text alone and the model is arguably right in every one. A reviewer
 who writes "Excellent! very good product" and leaves 3 stars is carrying
-information the text does not contain — a habitual rating style, a partial
+information the text does not contain - a habitual rating style, a partial
 refund, a delivery problem resolved offline.
 
 This is why the metric here is called **agreement**, not accuracy. A star
@@ -431,8 +432,8 @@ match. Any figure in this report that sounds like model quality is really
 model-rating concordance.
 
 It also puts a ceiling on the headline number that has nothing to do with the
-model. If some share of 3-star reviews are mislabelled by their own authors —
-text that reads clearly positive or clearly negative, rated 3 out of habit —
+model. If some share of 3-star reviews are mislabelled by their own authors -
+text that reads clearly positive or clearly negative, rated 3 out of habit -
 then a perfect classifier scores *below* 100% here, and the 24.0% NEUTRAL
 recall is partly measuring reviewer behaviour rather than model behaviour. I
 have not tried to quantify that share; doing it properly would need human
@@ -452,7 +453,7 @@ change the answer:
    justification first would test that directly and cost one field in the
    schema.
 3. **Drop the self-reported confidence** or replace it with token logprobs.
-   26 of 43 errors came in above 0.90 — the field currently looks like
+   26 of 43 errors came in above 0.90 - the field currently looks like
    information and is not.
 
 ## Other limitations
@@ -463,11 +464,11 @@ change the answer:
   a few points between configurations is interpretable, and none is claimed.
 - **Confidence is nearly useless as an error signal.** Mean 0.883 overall:
   **0.900 when correct (n=107), 0.840 when wrong (n=43)**. The gap is real but
-  far too small to threshold on — several wrong answers carried 0.95.
+  far too small to threshold on - several wrong answers carried 0.95.
 - **A rating leak exists in the input and was measured, not assumed.** 13 of
   150 reviews (8.7%) have Amazon's auto-generated `"N Stars"` title, which puts
   the rating into a prompt that should never see it. Accuracy on those rows was
-  **61.5%** against **72.3%** on the rest — *lower*, not higher. The model is
+  **61.5%** against **72.3%** on the rest - *lower*, not higher. The model is
   not reading the number. Left in place and reported rather than filtered out.
 - **The word list is evaluated on 38% of the sample**, since it declined the
   other 62%. Its 24.6% agreement describes only the reviews it could speak to.
@@ -480,13 +481,13 @@ change the answer:
 | `classify.py` | Endpoint client, timeout, retries, JSON extraction |
 | `emotion.py` | NRC word-list emotion scorer (no model calls) |
 | `sample.py` | Seeded, balanced reservoir sampling |
-| `score3.py` | Steps 5 + 6 runner, checkpointed — writes the results JSON |
+| `score3.py` | Steps 5 + 6 runner, checkpointed - writes the results JSON |
 | `dashboard.py` | Builds `dashboard.html` from a saved results file |
 | `check_determinism.py` | Measures run-to-run reproducibility |
 | `check_endpoint.py` | Reports what the server actually serves |
 | `data.py` | Downloads and streams the review file |
 | `results/step6_balanced50.json` | The balanced run this report describes |
-| `notes.md` | Build log — what broke and what it taught |
+| `notes.md` | Build log - what broke and what it taught |
 
 `dashboard.py` computes no metrics. Every figure on the page is read out of the
 saved JSON, which makes Step 7's instruction checkable: open the dashboard,

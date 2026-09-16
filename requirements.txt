@@ -1,11 +1,11 @@
-# MBAX 6418 — Assignment 1
+# MBAX 6418 - Assignment 1
 #
 # Two dependencies, both from the class material:
-#   openai   — the client the class endpoint speaks (vLLM is OpenAI-compatible)
-#   pydantic — structured outputs, Week 3 slide 22
+#   openai - the client the class endpoint speaks (vLLM is OpenAI-compatible)
+#   pydantic - structured outputs, Week 3 slide 22
 #
 # Everything else (json, re, random, gzip, urllib) is in the standard library.
-# The dashboard is plain HTML written by hand — no charting library.
+# The dashboard is plain HTML written by hand - no charting library.
 #
 # Minimums, not pins: these are the versions this was built and run against.
 

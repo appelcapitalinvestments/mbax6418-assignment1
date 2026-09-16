@@ -1,11 +1,11 @@
 """
-MBAX 6418 — Assignment 1, Step 6 (sampling half)
+MBAX 6418 - Assignment 1, Step 6 (sampling half)
 Balanced sampling across the whole file, on a fixed seed.
 
 The assignment's reasoning: "Because reading the first N rows in order
 under-represents the rarer classes, instead pull a balanced group from the
-whole file — a roughly equal number from each class, picked with a fixed random
-seed so the same set comes up every time — around 50 per class."
+whole file - a roughly equal number from each class, picked with a fixed random
+seed so the same set comes up every time - around 50 per class."
 
 Step 2 proved the point empirically. The first 100 rows held 93 POSITIVE and
 7 NEGATIVE, so a model answering POSITIVE unconditionally would have scored
@@ -87,7 +87,7 @@ def main() -> None:
     print("Star distribution in the sample:",
           dict(sorted(Counter(int(r["rating"]) for r in sample).items(), reverse=True)))
 
-    print("\nDeterminism check — redrawing with the same seed:")
+    print("\nDeterminism check - redrawing with the same seed:")
     again = balanced_sample()
     same = [a["row_index"] for a in sample] == [b["row_index"] for b in again]
     print(f"  identical row set and order: {same}")

@@ -1,5 +1,5 @@
 """
-MBAX 6418 — Assignment 1, Step 1
+MBAX 6418 - Assignment 1, Step 1
 One review in, one validated ReviewAnalysis out.
 
 Endpoint details come from `class-endpoints.txt` on Canvas (Dobolyi, 2026/09/09),
@@ -7,7 +7,7 @@ with one correction found by testing:
 
     # Hermes Primary Model
     Base URL: http://dobolyi.com:9000/v1
-    API Key:  see .env.example — NOT stored in this repo
+    API Key:  see .env.example - NOT stored in this repo
     Model:    deepseek-ai/DeepSeek-V4-Flash-0731   <-- as documented
               DeepSeek-V4-Flash-0731               <-- as actually served
 
@@ -21,7 +21,7 @@ handout. Run `python check_endpoint.py` to ask it.
 
 Two settings are deliberate, not defaults:
 
-  temperature=0 — matches the curl Dobolyi shows in the Week 4 slide notes,
+  temperature=0 - matches the curl Dobolyi shows in the Week 4 slide notes,
   and the assignment's standing considerations require repeatable results:
   "any number you publish should come from a fixed choice of which reviews
   were used (a fixed seed) and fixed settings."
@@ -100,7 +100,7 @@ SEED = 6418
 # with empty content and the row was recorded as a failure.
 #
 # The Sep 13 balanced run lost 13 of 150 rows that way, and 7 of those 13 were
-# 3-star reviews — the class the model already finds hardest and therefore
+# 3-star reviews - the class the model already finds hardest and therefore
 # thinks longest about. Dropping the hardest cases from the denominator
 # inflates every accuracy figure computed from what survives. That is a
 # non-random missingness problem, not a nuisance.

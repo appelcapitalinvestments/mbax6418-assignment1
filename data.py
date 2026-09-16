@@ -1,5 +1,5 @@
 """
-MBAX 6418 — Assignment 1
+MBAX 6418 - Assignment 1
 Loading the Amazon Reviews '23 Gift Cards data.
 
 Source: Amazon Reviews '23, collected by the McAuley Lab at UC San Diego.
@@ -21,8 +21,7 @@ Gzipped JSON Lines: one review per line. Fields per the assignment spec:
 
 The file is large and re-downloadable, so it is gitignored (`*.jsonl.gz`)
 rather than committed. The assignment says as much: "think about whether the
-data file (which is large and re-downloadable) ... belong[s] in the repo —
-generally they don't."
+data file (which is large and re-downloadable) ... belong[s] in the repo - generally they don't."
 
 Run directly to download and inspect:  python data.py
 """

@@ -1,17 +1,17 @@
 """
-MBAX 6418 — Assignment 1, Step 5 (word-list half)
+MBAX 6418 - Assignment 1, Step 5 (word-list half)
 
 The second, independent take on a review's primary emotion. No model calls:
 score each review's words against the NRC Word-Emotion Association Lexicon,
 sum per emotion, take the highest.
 
-Assignment wording: "A word list derives it — score each review's words against
+Assignment wording: "A word list derives it - score each review's words against
 an NRC emotion word list (a public list linking words to emotions: anger,
 anticipation, disgust, fear, joy, sadness, surprise, trust), add the scores per
 emotion, and take the highest as the answer. This needs no model calls and runs
 over your existing predictions."
 
-LICENSING — why the lexicon is not in this repo
+LICENSING - why the lexicon is not in this repo
 -----------------------------------------------
 The NRC Word-Emotion Association Lexicon (Mohammad & Turney) is free for
 non-commercial research and educational use, but its terms state plainly:

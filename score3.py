@@ -1,15 +1,15 @@
 """
-MBAX 6418 — Assignment 1, Steps 5 and 6
+MBAX 6418 - Assignment 1, Steps 5 and 6
 Three-class scoring on a balanced sample, with both emotion methods.
 
 Produces the run that the dashboard and the report are built from, and the
 "one balanced run's raw output" the deliverables list requires.
 
 Each review gets:
-  - three-class sentiment from the LLM, scored against the star rating
-  - a primary emotion from the LLM
-  - a primary emotion derived independently from the NRC word list
-  - the full NRC score vector, so the comparison can be inspected
+- three-class sentiment from the LLM, scored against the star rating
+- a primary emotion from the LLM
+- a primary emotion derived independently from the NRC word list
+- the full NRC score vector, so the comparison can be inspected
 
 Run:  python score3.py                 # ~50 per class
       python score3.py --per-class 5   # quick trial
@@ -58,7 +58,7 @@ def load_checkpoint(per_class: int) -> dict[int, dict]:
     try:
         saved = json.loads(path.read_text())
     except (json.JSONDecodeError, OSError):
-        print(f"  (checkpoint at {path.name} is unreadable — starting fresh)")
+        print(f"  (checkpoint at {path.name} is unreadable - starting fresh)")
         return {}
     # max_tokens is part of the key on purpose. A checkpoint written under a
     # smaller budget contains failures the current budget would not produce,
@@ -66,7 +66,7 @@ def load_checkpoint(per_class: int) -> dict[int, dict]:
     if (saved.get("model") != MODEL
             or saved.get("seed") != SEED
             or saved.get("max_tokens") != MAX_TOKENS):
-        print("  (checkpoint was written under different settings — starting fresh)")
+        print("  (checkpoint was written under different settings - starting fresh)")
         return {}
     return {r["row_index"]: r for r in saved.get("rows", [])}
 
@@ -116,7 +116,7 @@ def run(per_class: int, resume: bool = True) -> list[dict]:
 
     print(f"\nScoring {len(rows)} reviews against {MODEL} at {BASE_URL}")
     print(f"Timeout {REQUEST_TIMEOUT:.0f}s per call, {MAX_RETRIES} retries. "
-          f"Ctrl+C is safe — progress is saved after every review.\n")
+          f"Ctrl+C is safe - progress is saved after every review.\n")
 
     out: list[dict] = []
     try:
@@ -247,14 +247,14 @@ def metrics(rows: list[dict]) -> dict:
 
 def report(rows: list[dict], m: dict) -> None:
     print("\n" + "=" * 66)
-    print("STEPS 5 AND 6 RESULTS — three classes, balanced sample")
+    print("STEPS 5 AND 6 RESULTS - three classes, balanced sample")
     print("=" * 66)
 
     print(f"\nScored {m['n_scored']} of {m['n_attempted']}"
           + (f" ({m['n_failed']} failed)" if m["n_failed"] else ""))
 
     if m["n_failed"]:
-        print("  Failures by true class — check these are not concentrated:")
+        print("  Failures by true class - check these are not concentrated:")
         for c in CLASSES:
             n, rate = m["failures_by_truth"][c], m["failure_rate_by_truth"][c]
             flag = "  <-- over-represented" if rate and rate > 1.5 * (m["n_failed"] / m["n_attempted"]) else ""

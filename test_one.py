@@ -1,5 +1,5 @@
 """
-MBAX 6418 — Assignment 1, Step 1 spot check.
+MBAX 6418 - Assignment 1, Step 1 spot check.
 
 Dobolyi's Step 1 question: "does a quick spot-check on obviously positive and
 negative reviews come out right?"
@@ -38,13 +38,13 @@ CASES = [
         "Nope",
         "Didn't work.",
         "NEGATIVE",
-        "terse negative — brevity is not neutrality",
+        "terse negative - brevity is not neutrality",
     ),
     (
         "Love it!!",
         "Honestly this was a nightmare. The card had a zero balance and I had to fight for a refund.",
         "NEGATIVE",
-        "title and body disagree — prompt says weight the body",
+        "title and body disagree - prompt says weight the body",
     ),
     (
         "Had a problem at first",
@@ -91,7 +91,7 @@ def main() -> None:
     if failed:
         print("\nCases to look at before scaling to 100 rows:")
         for title, why, detail in failed:
-            print(f"  - {why}: {detail}")
+            print(f" - {why}: {detail}")
         print(
             "\nA miss here is information, not a bug. Decide whether the prompt's "
             "definition needs another exclusion bullet, or whether your own label "

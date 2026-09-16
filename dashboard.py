@@ -1,10 +1,10 @@
 """
-MBAX 6418 — Assignment 1, Steps 3, 4 and 7
+MBAX 6418 - Assignment 1, Steps 3, 4 and 7
 Generate a single self-contained HTML dashboard from a saved results file.
 
 Nothing here computes a metric. Every number rendered is read from the JSON
 that `score3.py` wrote, which is what makes Step 7's instruction checkable:
-"Check the numbers on the page against the numbers you saved earlier — in the
+"Check the numbers on the page against the numbers you saved earlier - in the
 browser, not just by eye."
 
 Design decisions and why
@@ -70,7 +70,7 @@ _ENTITY = {"&amp;": "&", "&quot;": '"', "&#34;": '"', "&apos;": "'", "&#39;": "'
 
 
 def clean_review_text(s: str) -> str:
-    """Amazon review bodies carry raw HTML — mostly <br /> where the reviewer
+    """Amazon review bodies carry raw HTML - mostly <br /> where the reviewer
     pressed return, plus the occasional entity. The page escapes everything it
     prints, so left alone these render as literal '<br />' in the middle of a
     sentence. Turn the breaks into spaces and drop the rest before escaping."""
@@ -122,7 +122,7 @@ _TEMPLATE = r"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Review Sentiment Classifier — MBAX 6418 Assignment 1</title>
+<title>Review Sentiment Classifier - MBAX 6418 Assignment 1</title>
 <style>
 :root{
   color-scheme: light;
@@ -236,7 +236,7 @@ table.rev tr:hover td{background:var(--plane)}
 }
 .mono{font:11.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--ink-2)}
 .rt{max-width:420px; color:var(--ink-2)}
-/* "agreed"/"differed" are words, not colors — no green/red pair to fail CVD. */
+/* "agreed"/"differed" are words, not colors - no green/red pair to fail CVD. */
 .ok-y{color:var(--ink-muted)}
 .ok-n{color:var(--ink); font-weight:600}
 .ok-e{color:var(--ink-muted); font-style:italic}
@@ -343,7 +343,7 @@ footer{color:var(--ink-muted); font-size:12px; margin-top:32px; line-height:1.7}
 const DATA = __DATA__;
 const $ = s => document.querySelector(s);
 const CLR = {POSITIVE:'var(--pos)', NEUTRAL:'var(--neu)', NEGATIVE:'var(--neg)'};
-const pct = v => v==null ? '—' : (v*100).toFixed(1)+'%';
+const pct = v => v==null ? ' - ' : (v*100).toFixed(1)+'%';
 
 /* ---------- tooltip ---------- */
 const tt = $('#tt');
@@ -382,7 +382,7 @@ $('#headnote').textContent =
 $('#tiles').innerHTML = [
   {k:'Agreement', v:pct(M.agreement_with_rating), d:M.n_scored+' reviews scored'},
   {k:'Majority baseline', v:pct(M.majority_class_baseline), d:'always guess the biggest class'},
-  {k:'Margin over baseline', v:(margin==null?'—':(margin>=0?'+':'−')+Math.abs(margin*100).toFixed(1)+' pts'),
+  {k:'Margin over baseline', v:(margin==null?' - ':(margin>=0?'+':'−')+Math.abs(margin*100).toFixed(1)+' pts'),
    d:'what the model earned'},
   {k:'Unusable replies', v:String(M.n_failed), d:'excluded from accuracy'},
 ].map(t => `<div class="tile"><div class="k">${t.k}</div>
@@ -408,8 +408,8 @@ $('#perclass-t').innerHTML = '<table class="plain"><tr><th>Class</th><th>Correct
 /* ---------- confusion matrix ---------- */
 const CM = M.confusion_truth_by_prediction;
 const cmMax = Math.max(...DATA.classes.flatMap(t => DATA.classes.map(p => CM[t][p])), 1);
-/* The sequential ramp is the same in both themes — a magnitude ramp should not
-   flip meaning when the page does — so the text on it is pinned to a fixed ink,
+/* The sequential ramp is the same in both themes - a magnitude ramp should not
+   flip meaning when the page does - so the text on it is pinned to a fixed ink,
    never the theme-aware --ink token. White only from step 3 up: white on
    #3987e5 is 3.64:1, under AA for text this size, while #0b0b0b on it is 5.4:1. */
 const SEQ = ['#cde2fb','#86b6ef','#3987e5','#1c5cab','#0d366b'];
@@ -518,10 +518,10 @@ function render(){
       <td class="mono">${r.i}</td>
       <td class="mono">${r.rating}</td>
       <td><span class="tag"><i class="dot" style="background:${CLR[r.truth]||'var(--neu)'}"></i>${esc(r.truth)}</span></td>
-      <td><span class="tag"><i class="dot" style="background:${CLR[r.pred]||'var(--grid)'}"></i>${esc(r.pred??'—')}</span> ${mark}</td>
-      <td class="mono">${r.conf==null?'—':r.conf.toFixed(2)}</td>
-      <td class="mono">${esc(r.llm??'—')}</td>
-      <td class="mono">${esc(r.nrc??'—')}</td>
+      <td><span class="tag"><i class="dot" style="background:${CLR[r.pred]||'var(--grid)'}"></i>${esc(r.pred??' - ')}</span> ${mark}</td>
+      <td class="mono">${r.conf==null?' - ':r.conf.toFixed(2)}</td>
+      <td class="mono">${esc(r.llm??' - ')}</td>
+      <td class="mono">${esc(r.nrc??' - ')}</td>
       <td class="rt"><b style="color:var(--ink)">${esc(r.title)}</b><br>${esc(r.text)}</td>
     </tr>`;
   }).join('') || '<tr><td colspan="8" style="color:var(--ink-muted);padding:20px 10px">No reviews match this filter.</td></tr>';
@@ -551,7 +551,7 @@ $('#tables').addEventListener('click', e => {
 });
 
 $('#foot').innerHTML =
-  'Data: Amazon Reviews &rsquo;23, Gift Cards category, McAuley Lab, UC San Diego &mdash; '
+  'Data: Amazon Reviews &rsquo;23, Gift Cards category, McAuley Lab, UC San Diego -  '
   + '<span class="mono">amazon-reviews-2023.github.io</span><br>'
   + 'Emotion word list: NRC Word-Emotion Association Lexicon (Mohammad &amp; Turney), used under its '
   + 'non-commercial research terms and not redistributed with this project.<br>'

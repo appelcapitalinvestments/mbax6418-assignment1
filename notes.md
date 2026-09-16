@@ -1,16 +1,16 @@
-# Build log — MBAX 6418 Assignment 1
+# Build log - MBAX 6418 Assignment 1
 
 Raw working notes, kept as things happen. **This is not the report.** The
 README has to be written in my own words after checking the numbers myself;
 this file is the evidence I write it from.
 
-Report question 4 asks: *"What bugs and/or issues did you hit along the way —
+Report question 4 asks: *"What bugs and/or issues did you hit along the way -
 in the charts, the UI, in the process of working with the agent, or anywhere
-else — and how did you work around them?"* Most of what follows answers that.
+else - and how did you work around them?"* Most of what follows answers that.
 
 ---
 
-## Sep 10 — setup
+## Sep 10 - setup
 
 **GitHub was the real blocker, not the code.** The assignment's only submission
 path is a repo link, and I had no authenticated GitHub on this machine.
@@ -30,7 +30,7 @@ which I had been warned to expect.
 
 ---
 
-## Sep 10 — the model name in the handout is wrong
+## Sep 10 - the model name in the handout is wrong
 
 `class-endpoints.txt` (Dobolyi, 2026/09/09) gives the primary model as:
 
@@ -38,7 +38,7 @@ which I had been warned to expect.
 
 Every call using that string returned:
 
-    HTTP 404 — The model deepseek-ai/DeepSeek-V4-Flash-0731 does not exist.
+    HTTP 404 - The model deepseek-ai/DeepSeek-V4-Flash-0731 does not exist.
 
 The server serves it under the bare name `DeepSeek-V4-Flash-0731`. The
 documented string is the upstream HuggingFace repo id, not the vLLM
@@ -58,7 +58,7 @@ on the handout. Should have trusted the evidence over the document.
 
 ---
 
-## Sep 10 — the agent refused to commit a credential, and it was right
+## Sep 10 - the agent refused to commit a credential, and it was right
 
 Asked Hermes to `git add`, commit and push. It stopped and asked:
 
@@ -70,7 +70,7 @@ Asked Hermes to `git add`, commit and push. It stopped and asked:
 It was correct. The token appears in a PDF distributed to the class, which is
 not the same as publishing it in a public repository where anyone can point it
 at the instructor's GPU server. The assignment says exactly this: *"think about
-whether the data file ... or any credentials/tokens belong in the repo —
+whether the data file ... or any credentials/tokens belong in the repo -
 generally they don't. Ask the agent if you're unsure what's safe to commit."*
 
 **Fix:** removed the literal. `classify.py` now requires `CLASS_API_KEY` from
@@ -78,13 +78,13 @@ the environment or a gitignored `.env`, and refuses to start with instructions
 if it is missing. Added `.env.example` as a committed template with the value
 blank.
 
-This is the inverse of the warning in the Week 3 slides — "never trust anything
+This is the inverse of the warning in the Week 3 slides - "never trust anything
 your agent does, you must review, audit, check, verify." Here the agent caught
 something I had missed and had already talked myself into.
 
 ---
 
-## Sep 10 — my gitignore silently excluded its own template
+## Sep 10 - my gitignore silently excluded its own template
 
 The project `.gitignore` had:
 
@@ -101,7 +101,7 @@ appears in `git status`.
 
 ---
 
-## Sep 10 — copying the template produced an empty key
+## Sep 10 - copying the template produced an empty key
 
 `cp .env.example .env` creates the file with `CLASS_API_KEY=` blank. The next
 run failed immediately with the explicit message the code raises, rather than a
@@ -114,7 +114,7 @@ Checked without printing the secret:
 
 ---
 
-## Sep 10 — endpoint behavior differences worth knowing
+## Sep 10 - endpoint behavior differences worth knowing
 
 Measured directly, not assumed.
 
@@ -124,7 +124,7 @@ Measured directly, not assumed.
 | vLLM | 0.26.1rc0, tensor-parallel 2 | stock 0.29.0 |
 | Prompt caching | yes, reports `cached_tokens` | not observed |
 | Hidden system prompt | ~80 tokens prepended server-side | ~0 |
-| Reasoning field | none observed, clean `content` | yes — 98 reasoning tokens for a 1-token answer |
+| Reasoning field | none observed, clean `content` | yes - 98 reasoning tokens for a 1-token answer |
 | Response cleanliness | clean, no leading whitespace | leading `\n\n` |
 
 Two consequences for this build. Kept `max_tokens` generous so a reasoning
@@ -143,14 +143,14 @@ content and has the caching. Open question worth asking Dobolyi: he labels 9001
 
 ---
 
-## Sep 10 — Step 1 spot check
+## Sep 10 - Step 1 spot check
 
 7/7 on hand-written cases, including the five edge cases the prompt claims to
 handle: terse positive, terse negative, title-versus-body conflict, resolved
 complaint, and anger with no stated reason. The title/body conflict case was
 the one I expected to fail and it did not.
 
-## Sep 10 — Step 2, 10-row trial
+## Sep 10 - Step 2, 10-row trial
 
 10/10 correct. **Majority-class baseline on that sample: 90%**, because nine of
 the ten rows are 5-star.
@@ -165,15 +165,15 @@ baseline or it means nothing.
 
 ## Still open
 
-- [x] Full 100-row run (Step 2) — done, see below
-- [ ] Steps 3–7
+- [x] Full 100-row run (Step 2) - done, see below
+- [ ] Steps 3-7
 - [ ] Ask Dobolyi which endpoint he intends for the classification task
 - [ ] Decide whether to set a repo-local noreply commit email (public repo
       currently exposes a personal address in commit history)
 
 ---
 
-## Sep 10 — Step 2, full 100-row run
+## Sep 10 - Step 2, full 100-row run
 
 Saved to `results/step2_first100.json`. Run at 17:18 UTC against
 `DeepSeek-V4-Flash-0731` on port 9000, first 100 rows in file order.
@@ -235,7 +235,7 @@ get labeled negative or negatives get called neutral; the answer starts here.
 
 A genuinely mixed review: warm about the product, annoyed about one feature.
 The format lock held for 99 rows and broke on the one review whose sentiment is
-actually ambiguous. That is Week 3 slide 22 demonstrated live — prompting for a
+actually ambiguous. That is Week 3 slide 22 demonstrated live - prompting for a
 format does not guarantee the format, and the failure lands precisely where the
 task is hardest.
 
@@ -259,7 +259,7 @@ implying the number means something.
 
 ---
 
-## Sep 10 — Steps 5, 6 and 7 built together
+## Sep 10 - Steps 5, 6 and 7 built together
 
 Steps 5 and 6 both change the shape of the model's output, so building them
 one after the other would have meant building the dashboard twice. They went in
@@ -293,11 +293,11 @@ unverifiable.
 
 Built a synthetic 150-row fixture with the exact shape `score3.save()` writes,
 rendered the page in a headless browser, and read the numbers back out of the
-DOM to compare against the JSON. 26 value checks — tiles, per-class bars, all
+DOM to compare against the JSON. 26 value checks - tiles, per-class bars, all
 nine confusion cells, star counts, filter counts, live count. Four real
 problems surfaced that reading the code had not:
 
-1. **A relative path argument crashed the script** — after it had already
+1. **A relative path argument crashed the script** - after it had already
    written the file. `Path.relative_to()` throws when one path is relative and
    the other absolute. Fixed with a `_short()` helper that falls back to the
    absolute path.
@@ -313,7 +313,7 @@ problems surfaced that reading the code had not:
    blue cell. A magnitude ramp should not change meaning when the theme does,
    so the ramp and the ink on it are now both pinned, independent of theme.
 
-4. **White text on the mid ramp step was 3.64:1** — under AA for text that
+4. **White text on the mid ramp step was 3.64:1** - under AA for text that
    size. `#0b0b0b` on the same step is 5.4:1, so the white/dark ink switch moved
    up one step. Checked with a contrast calculation, not by looking at it.
 
@@ -323,8 +323,8 @@ order, so the page was rendering 1-to-5. Sorted explicitly in the page.
 
 ### The palette was computed, not chosen
 
-Sentiment is polarity data, so it uses a **diverging** encoding — blue for
-POSITIVE, neutral gray for NEUTRAL, red for NEGATIVE — not three arbitrary
+Sentiment is polarity data, so it uses a **diverging** encoding - blue for
+POSITIVE, neutral gray for NEUTRAL, red for NEGATIVE - not three arbitrary
 categorical hues. The first attempt used a categorical trio and it failed dark
 mode outright: `#e66767` against `#c98500` came out at ΔE 13.0, under the
 normal-vision floor of 15. Two readers with ordinary colour vision could not
@@ -355,7 +355,7 @@ The sequential ramp was checked for monotonic lightness separately.
 
 ---
 
-## Sep 13 — the run "froze," and it was a missing timeout
+## Sep 13 - the run "froze," and it was a missing timeout
 
 Jacob's full run appeared to hang. It probably was not hung.
 
@@ -363,7 +363,7 @@ Jacob's full run appeared to hang. It probably was not hung.
 nothing else. The library's defaults are **600 seconds per request with 2
 automatic retries**, so a single unresponsive call can occupy the terminal for
 up to half an hour while printing nothing. That is indistinguishable from a
-freeze, and on a 150-call loop it is not a rare event — Dobolyi extended the
+freeze, and on a 150-call loop it is not a rare event - Dobolyi extended the
 deadline from 9/13 to 9/15 precisely because the class endpoints had been
 falling over since Friday evening (hosting provider incident, linked in his
 Sep 12 announcement).
@@ -382,7 +382,7 @@ Ctrl+C threw away twenty minutes. Now each scored review is written to
 resumes from the first unscored row, and `KeyboardInterrupt` is caught so
 stopping prints how far it got rather than a stack trace. `--fresh` forces a
 clean run. The checkpoint is deleted once the real results file is written, and
-is gitignored — a partial run is not a result.
+is gitignored - a partial run is not a result.
 
 The checkpoint is keyed on model and seed. Change either and it is discarded
 rather than silently mixing rows from two different configurations, which would
@@ -402,7 +402,7 @@ reason it surfaced is that the endpoint had a bad week.
 
 ---
 
-## Sep 13 — the balanced run landed, and it found three problems
+## Sep 13 - the balanced run landed, and it found three problems
 
 150 sampled, **137 scored, 13 unusable**. Agreement 70.8% against a 35.0%
 majority baseline. Per class: POSITIVE 48/48 (100%), NEGATIVE 45/46 (97.8%),
@@ -410,7 +410,7 @@ majority baseline. Per class: POSITIVE 48/48 (100%), NEGATIVE 45/46 (97.8%),
 
 ### The headline is not the accuracy, it is the shape
 
-Collapse NEUTRAL out and the model gets 93 of 94 poles right — 98.9%. Put
+Collapse NEUTRAL out and the model gets 93 of 94 poles right - 98.9%. Put
 NEUTRAL back and it gets 4 of 43. This is not a model that is 70.8% good at a
 three-class problem. It is a near-perfect binary classifier being asked a
 three-class question, and it answers by picking a pole: of 43 scored 3-star
@@ -431,11 +431,11 @@ defensible next to the rating:
     3* "Did not receive the amount I chose." -> NEGATIVE
 
 Read the text alone and the model is arguably right in every one. The 3-star
-rating is carrying information the text does not contain — habitual rating
+rating is carrying information the text does not contain - habitual rating
 style, a partial refund, something outside the review. That is the strongest
 available answer to "where does the star rating fail as ground truth."
 
-### Problem 1 — the 13 failures were not random, and they inflate the numbers
+### Problem 1 - the 13 failures were not random, and they inflate the numbers
 
 Every failure was the same error: empty `content`. This is a reasoning model;
 it writes chain-of-thought into a separate field first, and `max_tokens=512`
@@ -443,7 +443,7 @@ was being consumed by thinking before any answer got written.
 
 The distribution is what matters. Of the 13 lost rows, **7 were NEUTRAL**,
 4 NEGATIVE, 2 POSITIVE. The model thinks longest about the reviews it finds
-hardest, so truncation removes the hardest cases first — and those cases are
+hardest, so truncation removes the hardest cases first - and those cases are
 concentrated in the class that was already performing worst. NEUTRAL's 9.3% is
 computed over the 43 that survived, not the 50 that were sampled. Every figure
 in the run is therefore flattered by an unknown amount.
@@ -459,16 +459,16 @@ Fixed three ways:
   `report()` flags any class losing more than 1.5x its share. The check is
   automatic from here rather than something that has to be noticed.
 
-### Problem 2 — output is not reproducible, despite fixed seed and temperature
+### Problem 2 - output is not reproducible, despite fixed seed and temperature
 
 Two consecutive runs over the same reviews, `temperature=0.0`, `seed=6418`,
-same model, same prompt — and they disagreed:
+same model, same prompt - and they disagreed:
 
     'Perfume smell :('   run A: NEUTRAL      run B: NEGATIVE
     'As expected'        run A: NEUTRAL      run B: POSITIVE
     'Easy to give'       emotion joy      -> trust
-    'Three Stars' (#35)  emotion trust    -> joy
-    'Five Stars'  (#11)  failed in A, succeeded in B
+    'Three Stars' (#35) emotion trust    -> joy
+    'Five Stars'  (#11) failed in A, succeeded in B
 
 The assignment requires results "repeatable via a fixed seed and fixed
 settings." They are not, and the reason is not the seed. vLLM batches
@@ -476,27 +476,27 @@ concurrent requests, batch composition changes the order of floating-point
 reductions inside the kernels, and different summation order shifts logits
 slightly. Near a decision boundary that is enough to flip the argmax at
 temperature 0. Batch composition depends on whatever else is hitting the shared
-class endpoint at that moment — other students, in other words. The seed
+class endpoint at that moment - other students, in other words. The seed
 governs sampling and cannot touch any of this.
 
 `check_determinism.py` added to measure the rate rather than assert it: same
 reviews classified twice, reports how often sentiment, emotion and confidence
 change. Prediction to test: flips should cluster on NEUTRAL, because
-instability and the model's weakest class are the same phenomenon — reviews
+instability and the model's weakest class are the same phenomenon - reviews
 sitting on a boundary.
 
 Practical consequence for the report: any single accuracy figure from this
 endpoint carries run-to-run noise on top of sampling noise. Small differences
 between configurations are not interpretable, and none should be claimed.
 
-### Problem 3 — the rating leak turned out to be mostly harmless, and that is measurable
+### Problem 3 - the rating leak turned out to be mostly harmless, and that is measurable
 
 Amazon auto-fills "One Star" ... "Five Stars" as the title when the reviewer
 leaves it blank, which puts the rating into a prompt that is supposed to never
 see it. Feared earlier that this was inflating accuracy.
 
 The run says otherwise. The six "Three Stars" rows in the sample were called
-POSITIVE, NEGATIVE, POSITIVE, POSITIVE, NEGATIVE and NEUTRAL — scattered. If
+POSITIVE, NEGATIVE, POSITIVE, POSITIVE, NEGATIVE and NEUTRAL - scattered. If
 the model were reading the number out of the title it would have answered those
 identically. It is not.
 
@@ -507,7 +507,7 @@ hand-checked examples.
 ### The emotion comparison: 26.0%, on a quarter of the data
 
 The word list gave **no answer on 93 of 150 reviews (62%)**. Only 50 rows had
-an answer from both methods, and those agreed on 13 — **26.0%**.
+an answer from both methods, and those agreed on 13 - **26.0%**.
 
 Two distributions that barely overlap:
 
@@ -533,7 +533,7 @@ count. It has nothing to work with.
 
 ---
 
-## Sep 13 (later) — the fix worked, and it inverted my prediction
+## Sep 13 (later) - the fix worked, and it inverted my prediction
 
 `python score3.py --fresh` with `max_tokens=2048`: **150 of 150 scored, zero
 failures**, 228 seconds.
@@ -542,7 +542,7 @@ I predicted NEUTRAL accuracy would **fall** once the truncated hard cases came
 back into the denominator. It **rose**, from 9.3% to 24.0%.
 
 The reason is better than the prediction was. Look at what the 13 recovered
-rows actually returned — **6 of the 7 recovered 3-star reviews came back
+rows actually returned - **6 of the 7 recovered 3-star reviews came back
 correctly labelled NEUTRAL**:
 
     'Gift Certificate'                  -> NEUTRAL  ok
@@ -554,7 +554,7 @@ correctly labelled NEUTRAL**:
     'Why am I asked to review this?'    -> NEGATIVE MISS
 
 Arriving at NEUTRAL requires weighing two sides; arriving at a pole does not.
-So the reasoning budget was not losing rows at random — **it was systematically
+So the reasoning budget was not losing rows at random - **it was systematically
 truncating one specific answer**, the one that takes longest to reach. A token
 ceiling was acting as a silent bias against the model's own middle class.
 
@@ -567,7 +567,7 @@ Across the whole run the shift is visible in the prediction distribution:
 agreement moved 70.8% -> 71.3%, half a point. **The aggregate metric was almost
 perfectly blind to a behavioural change that tripled one class's output.** If
 the only number being watched had been "accuracy," this would have gone
-unnoticed in both directions — first as a silent bias, then as a silent fix.
+unnoticed in both directions - first as a silent bias, then as a silent fix.
 
 Worth recording as a mistake on my side too: I stated the direction confidently
 and was wrong. The reasoning behind the prediction ("the hardest cases return,
@@ -584,7 +584,7 @@ that truncation was not sampling those cases neutrally.
     poles only           95/100 = 95.0%
     predictions issued   POSITIVE 61, NEGATIVE 72, NEUTRAL 17
     emotion agreement    14/57 comparable = 24.6%  (NRC silent on 93/150 = 62%)
-    confidence           mean 0.883; 0.900 correct (n=107), 0.840 wrong (n=43)
+    confidence mean 0.883; 0.900 correct (n=107), 0.840 wrong (n=43)
 
 Two structural facts in the confusion matrix worth more than the headline:
 
@@ -600,7 +600,7 @@ accuracy problem. It is a model with one specific, locatable failure.
 13 of 150 sampled reviews (8.7%) carry Amazon's auto-generated "N Stars" title.
 Accuracy on those rows: **61.5%**. On everything else: **72.3%**. The leaked
 rows scored *worse*. Whatever the model is doing, it is not reading the number
-out of the title. Reported and left in place rather than filtered — filtering
+out of the title. Reported and left in place rather than filtered - filtering
 would have meant re-running and would have looked like tidying.
 
 ### Two dashboard bugs the synthetic fixture could not have caught
@@ -615,7 +615,7 @@ argument for rendering the real thing before calling it done:
 
 2. **Zero-count bars still drew.** `min-width:2px` on every bar meant an
    emotion with a count of 0 rendered a small tick. That is the inverse of the
-   collapsed-bar bug the assignment warns about — instead of real data
+   collapsed-bar bug the assignment warns about - instead of real data
    vanishing, absent data appeared. A count of zero now draws nothing, and the
    2px floor applies only to genuinely non-zero values.
 
@@ -625,7 +625,7 @@ literal `<br>`, zero visible bars with `data-n="0"`.
 ### Verification of the report itself
 
 Wrote a script that re-derives all 32 quoted figures from
-`results/step6_balanced50.json` and confirms each appears in `README.md` —
+`results/step6_balanced50.json` and confirms each appears in `README.md` -
 per-class counts, all nine confusion cells, both emotion distributions, the
 leak comparison, the confidence split. All pass. Separately, all 23 figures
 rendered on the dashboard were read back out of the DOM and compared to the
@@ -637,7 +637,7 @@ hoping.
 
 ---
 
-## Sep 15 — reproducibility, measured
+## Sep 15 - reproducibility, measured
 
 `check_determinism.py`, 18 reviews classified twice in one sitting, identical
 settings. 17 comparable (one review exhausted its token budget in a pass).
@@ -660,7 +660,7 @@ not. A 17-review test cannot detect a flip rate of a few percent, and two
 sentiment flips were directly observed earlier, so the rate is low but nonzero.
 The README now says that rather than the stronger claim.
 
-The mechanism is unchanged and still worth reporting — batch composition on a
+The mechanism is unchanged and still worth reporting - batch composition on a
 shared vLLM endpoint changes floating-point reduction order, which moves logits
 enough to flip a near-tie at temperature 0. What the measurement adds is
 *where* it bites: the three emotion changes are all mixed reviews, and emotion
@@ -675,14 +675,14 @@ is narrower than the anecdote implied.
 ### 2048 tokens is still not always enough
 
 One of the 18 came back `finish_reason=length, completion_tokens=2048/2048`.
-The ceiling problem is reduced — 13 failures in 150 became roughly 1 in 18 —
+The ceiling problem is reduced - 13 failures in 150 became roughly 1 in 18 -
 not solved. Worth noting that the diagnostic added on Sep 13 is what made this
 immediately legible: the message named the finish reason and the exact token
 count, so there was nothing to infer.
 
 ---
 
-## Sep 15 — audit against the actual assignment PDF, and a number I got wrong
+## Sep 15 - audit against the actual assignment PDF, and a number I got wrong
 
 Read the assignment PDF and the Notes file properly for the first time. Two
 corrections came out of it, one of them the exact failure the assignment warns
@@ -707,15 +707,15 @@ So the real margin was **6.1 points, not 2**, and the headline was **99.0%, not
 95%**. Corrected, along with the downstream sentence comparing it to the
 balanced run's 38.0-point margin.
 
-This is precisely the standing instruction — *"every number you claim should
-match the saved output; don't publish something you haven't re-checked"* — and
+This is precisely the standing instruction - *"every number you claim should
+match the saved output; don't publish something you haven't re-checked"* - and
 I broke it by paraphrasing a run from three days earlier instead of opening the
 file. The verification script I wrote on Sep 13 covered every figure sourced
 from `step6_balanced50.json` and never touched `step2_first100.json`, so it
 passed while a wrong number sat two sections above. A checker only checks what
 it is pointed at.
 
-### Port 9000 vs 9001 — a real conflict in the course materials
+### Port 9000 vs 9001 - a real conflict in the course materials
 
 *Assignment 1 Notes* (Sep 4) says: *"for the OpenAI-compatible endpoint, use the
 following one: http://dobolyi.com:9001/v1"*. This project used **:9000**
@@ -727,7 +727,7 @@ for :9000:
 - The assignment brief says model calls go through *"an OpenAI-compatible
   endpoint (e.g., the one we used to set up Hermes Agent)"*, and
   `class-endpoints.txt` (Sep 10) labels :9000 **Hermes Primary Model**.
-- That same file lists :9001 as `cyankiwi/Qwen3.6-35B-A3B-AWQ-4bit` — a
+- That same file lists :9001 as `cyankiwi/Qwen3.6-35B-A3B-AWQ-4bit` - a
   **vision** model, not the text model this task wants.
 - Both were tested directly on Sep 10. :9000 returns clean JSON and reports
   `cached_tokens`; :9001 injects an ~80-token system prompt and returns a
@@ -742,7 +742,7 @@ reads as judgment, and the reasoning is real either way.
 
 Checked whether the Sep 10 lecture recording said anything that relaxed the
 report requirements. **Every recording in the account returns an empty
-transcript** — nothing is transcribed, including the three 6418 sessions. So
+transcript** - nothing is transcribed, including the three 6418 sessions. So
 there is no verbal record to weigh against the written brief, in either
 direction. The PDF stands as the only authority, and it lists the four report
 questions under "The report should be able to answer, with evidence."
@@ -751,7 +751,7 @@ questions under "The report should be able to answer, with evidence."
 
 Steps 1-7: all present. Final deliverables: report, prompt, scoring script,
 word-list script, dashboard generator, one balanced run's raw output, final
-dashboard — all present. Report format: markdown README, five screenshots,
+dashboard - all present. Report format: markdown README, five screenshots,
 data source cited. Submission: public repo, one per person, all code and the
 README in it.
 
@@ -760,7 +760,7 @@ than Jacob's, and the Canvas submission itself.
 
 ---
 
-## Sep 15 (evening) — precision vs recall, and a confidence inversion
+## Sep 15 (evening) - precision vs recall, and a confidence inversion
 
 Two analyses that should have been run on Sep 13 and were not. Both change what
 the report's central claim should be.
@@ -770,12 +770,12 @@ the report's central claim should be.
 The confusion matrix was only ever read by rows, which gives recall. Reading
 the columns gives precision, and the two tell different stories:
 
-    class      predicted  right  precision   recall
+    class predicted right precision recall
     POSITIVE          61     49     80.3%    98.0%
     NEUTRAL           17     12     70.6%    24.0%
     NEGATIVE          72     46     63.9%    92.0%
 
-**When the model says NEUTRAL it is right 70.6% of the time — better precision
+**When the model says NEUTRAL it is right 70.6% of the time - better precision
 than it manages on NEGATIVE (63.9%).** It is not failing to recognise mixed
 reviews. It is declining to call them. 17 NEUTRAL predictions against a true 50
 is under-commitment, not incapacity.
@@ -791,12 +791,12 @@ matrix read one way is half a result.
 
 ### Confidence runs backwards on the class that needs it most
 
-    true class   mean conf when correct   when wrong
+    true class mean conf when correct when wrong
     POSITIVE     0.913 (n=49)             0.700 (n=1)
     NEGATIVE     0.926 (n=46)             0.625 (n=4)
     NEUTRAL      0.742 (n=12)             0.867 (n=38)
 
-On the poles, confidence is well calibrated — wrong answers come in visibly
+On the poles, confidence is well calibrated - wrong answers come in visibly
 lower. On 3-star reviews it **inverts**: the model is more confident when it is
 wrong (0.867) than when it is right (0.742).
 
@@ -827,12 +827,12 @@ All pass.
 
 ### Report provenance stated openly
 
-Replaced the internal "DRAFT — rewrite before submitting" banner with a "How
+Replaced the internal "DRAFT - rewrite before submitting" banner with a "How
 this report was produced" section: what the agent did, what Jacob directed, and
 two places where the agent was demonstrably wrong (the Step 2 number carried
 from memory; the confidently wrong prediction about NEUTRAL accuracy falling).
 The assignment is explicitly about working with an agent, so describing that
-work honestly — including its failures — is more appropriate than either hiding
+work honestly - including its failures - is more appropriate than either hiding
 it or apologising for it.
 
 Added a "what I would do differently" section: hand-label the 50 3-star

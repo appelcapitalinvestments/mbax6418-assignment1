@@ -1,5 +1,5 @@
 """
-MBAX 6418 — Assignment 1
+MBAX 6418 - Assignment 1
 The classification prompt and the structured-output schema.
 
 Covers Step 1 (binary sentiment), Step 5 (LLM-predicted emotion) and Step 6
@@ -10,13 +10,13 @@ run is preserved in results/ as evidence of the earlier stage.
 
 Design follows two things Dobolyi taught directly:
 
-  Week 3, slide 19 — the worked classification prompt from his own research
+  Week 3, slide 19 - the worked classification prompt from his own research
   (Dobolyi, Tamburrino, Borden & Faruque 2026). Its moves are reused here:
   a defined role, an explicit definition with stated exclusions, "###" section
   separators, a fixed response scale, a scripted insertion point for the data,
   and an all-caps format lock at the end.
 
-  Week 3, slide 22 — structured outputs. His words: "Prompting a model to
+  Week 3, slide 22 - structured outputs. His words: "Prompting a model to
   answer a specific way or to use a specific scale does not guarantee
   adherence. If adherence is key (e.g., classification tasks, downstream use),
   consider structured outputs, which dictate exactly how a model must respond."
@@ -60,7 +60,7 @@ class ReviewAnalysisBinary(BaseModel):
 # --------------------------------------------------------------------------
 
 # This block is byte-identical on every call. Only the review changes, which
-# lets the server's prefix cache do its job — port 9000 reports `cached_tokens`,
+# lets the server's prefix cache do its job - port 9000 reports `cached_tokens`,
 # so after the first call the instructions are not re-processed. That is
 # Week 2, slide 12 (prompt/prefix caching) applied to a 150-call run.
 
@@ -139,7 +139,7 @@ def rating_to_label_binary(rating: float) -> Sentiment2:
     """Step 2's rule, kept so the earlier run stays reproducible.
 
     Note what this does to 3-star reviews: it forces them into NEGATIVE. The
-    Step 2 run produced direct evidence that this is wrong — a 3-star review
+    Step 2 run produced direct evidence that this is wrong - a 3-star review
     reading "Very easy to use. I wish I knew about it earlier" was scored as a
     model error when the model called it POSITIVE.
     """
