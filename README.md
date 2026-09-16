@@ -9,7 +9,8 @@
 > conclusions into your own words is part of the assignment, not an optional
 > pass."* Rewrite the narrative, keep the figures. Delete this block when done.
 >
-> **Still to add:** the output of `check_determinism.py` in section 4b.
+> All figures are now in, including the reproducibility measurement in 4b.
+> What remains is the prose.
 
 ---
 
@@ -111,9 +112,23 @@ word-level file yourself and place it in this directory; it is gitignored.
 | Run time | 228 seconds |
 | Structured output | Pydantic `ReviewAnalysis`, validated on every reply |
 
-> The handout lists the model as `deepseek-ai/DeepSeek-V4-Flash-0731`. That
-> 404s. The server serves the bare `DeepSeek-V4-Flash-0731`. `check_endpoint.py`
-> asks the server rather than trusting the handout.
+> **Two documented deviations from the handouts, both deliberate.**
+>
+> **Model name.** The handout lists `deepseek-ai/DeepSeek-V4-Flash-0731`. That
+> 404s. The server serves the bare `DeepSeek-V4-Flash-0731`.
+> `check_endpoint.py` asks the server rather than trusting the handout.
+>
+> **Port.** *Assignment 1 Notes* names `:9001` as the OpenAI-compatible
+> endpoint. This project uses `:9000`, for three reasons: the assignment brief
+> itself points at *"the one we used to set up Hermes Agent,"* which
+> `class-endpoints.txt` labels **Hermes Primary Model** on **:9000**; that same
+> file lists `:9001` as serving a **vision** model
+> (`cyankiwi/Qwen3.6-35B-A3B-AWQ-4bit`), not the text model this task needs;
+> and both were tested directly — `:9000` returns clean JSON with
+> `cached_tokens` reported, while `:9001` injects an ~80-token system prompt and
+> returns a separate reasoning field. Both are OpenAI-compatible, which is the
+> brief's actual requirement. `check_endpoint.py` and `CLASS_BASE_URL` in
+> `.env` make the choice explicit and reversible.
 
 ## Running it
 
@@ -142,14 +157,17 @@ The full Gift Cards file is **152,410 reviews: 134,940 POSITIVE (88.5%),
 14,199 NEGATIVE (9.3%), 3,271 NEUTRAL (2.1%)**. A model that answered POSITIVE
 unconditionally and read nothing would score **88.5%**.
 
-The Step 2 run made this concrete. Its first-100-rows sample held 93 POSITIVE
-and 7 NEGATIVE; the majority-class baseline there was **92.9%**, so the 95%
-accuracy it produced was worth about two points of genuine signal.
+The Step 2 run made this concrete. Reading the first 100 rows in order gave 93
+POSITIVE and 7 NEGATIVE, and under that split the binary classifier scored
+**99.0% agreement (98 of 99 scored, 1 unusable) against a 92.9% majority-class
+baseline** — a margin of **6.1 points**. Read the 99.0% alone and the model
+looks close to perfect. Read it against the baseline and most of the apparent
+skill is the sample's shape, not the model's.
 
 Balanced sampling drops the baseline to **33.3%** — one third, because each
-class contributes exactly 50 reviews. Measured accuracy fell to **71.3%**, but
-the *margin over baseline* rose from roughly 2 points to **38 points**. The
-model did not get worse. The measurement stopped lying.
+class contributes exactly 50 reviews. Measured agreement fell to **71.3%**, but
+the *margin over baseline* rose from **6.1 points to 38.0 points**. The model
+did not get worse. The measurement stopped flattering it.
 
 Balanced sampling also made NEUTRAL visible at all. At its natural 2.1% rate, a
 150-review random sample would contain about three 3-star reviews — too few to
@@ -263,8 +281,8 @@ accuracy more than doubled with no change to the prompt, the model, or the
 sample — only the room to think. Overall agreement moved 0.5 points, which is
 why an aggregate number is a poor instrument for detecting this.
 
-**b) Output is not reproducible, despite a fixed seed and temperature 0.** Two
-consecutive runs over identical reviews with identical settings disagreed:
+**b) Output is not fully reproducible, despite a fixed seed and temperature 0.**
+Two consecutive runs over identical reviews with identical settings disagreed:
 `'Perfume smell :('` was NEUTRAL then NEGATIVE; `'As expected'` was NEUTRAL then
 POSITIVE; `'Easy to give'` changed its emotion from joy to trust.
 
@@ -275,9 +293,33 @@ that is enough to flip the argmax even at temperature 0. Batch composition
 depends on what else is hitting the shared class endpoint — other students. The
 seed governs sampling and cannot reach any of that.
 
-The assignment requires results "repeatable via a fixed seed and fixed
-settings." They are not. `check_determinism.py` measures the rate rather than
-asserting it. *(Run it and put the number here.)*
+`check_determinism.py` measures the rate rather than asserting it: the same
+reviews classified twice in one sitting, identical settings. Over 17 comparable
+reviews:
+
+| What changed between two identical passes | Rate |
+|---|---|
+| Sentiment | **0 / 17 (0.0%)** |
+| Primary emotion | **3 / 17 (17.6%)** |
+| Confidence value | **6 / 17 (35.3%)** |
+
+The emotion changes were `joy → sadness`, `sadness → disgust`, and
+`sadness → anger` — each a plausible reading of a mixed review, which is the
+point: instability shows up exactly where the decision is close.
+
+**This refines the claim rather than confirming it.** Sentiment held steady
+across all 17, so the sentiment flip rate is low — but it is not zero, because
+two sentiment flips were directly observed between the earlier pair of full
+runs. 17 reviews cannot detect a rate of a few percent. The defensible
+statement is that **sentiment is mostly stable and emotion and confidence are
+visibly not**, and that the assignment's requirement of results "repeatable via
+a fixed seed and fixed settings" is not met.
+
+**One review still exhausted 2048 tokens** (`finish_reason=length,
+completion_tokens=2048/2048`). Raising the ceiling reduced the truncation
+problem from 13 rows in 150 to roughly 1 in 18 on this small sample; it did not
+eliminate it. The improved error message is what makes that legible — it
+reports the finish reason and the token count instead of inviting a guess.
 
 **c) The endpoint went down and the deadline moved.** Class endpoints failed
 from Friday evening; Dobolyi posted a workaround and extended the deadline from

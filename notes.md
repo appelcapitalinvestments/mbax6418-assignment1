@@ -634,3 +634,126 @@ same file. Also all pass.
 That is the assignment's "every number quoted must match a visible figure in
 the saved output," done mechanically rather than by reading carefully and
 hoping.
+
+---
+
+## Sep 15 — reproducibility, measured
+
+`check_determinism.py`, 18 reviews classified twice in one sitting, identical
+settings. 17 comparable (one review exhausted its token budget in a pass).
+
+    sentiment changed   0 / 17   ( 0.0%)
+    emotion changed     3 / 17   (17.6%)
+    confidence changed  6 / 17   (35.3%)
+
+    joy      -> sadness    'Cute but not te best'
+    sadness  -> disgust    'Santa Gift Card Box'
+    sadness  -> anger      'Paper egg presentation damaged'
+
+**This corrected my own overstatement.** On Sep 13 I wrote that "output is not
+reproducible" and generalised from two observed sentiment flips between full
+runs. The controlled test found **zero sentiment changes in 17 reviews**. Both
+observations are real; the conclusion I drew from the first was too broad.
+
+The accurate version: sentiment is mostly stable, emotion and confidence are
+not. A 17-review test cannot detect a flip rate of a few percent, and two
+sentiment flips were directly observed earlier, so the rate is low but nonzero.
+The README now says that rather than the stronger claim.
+
+The mechanism is unchanged and still worth reporting — batch composition on a
+shared vLLM endpoint changes floating-point reduction order, which moves logits
+enough to flip a near-tie at temperature 0. What the measurement adds is
+*where* it bites: the three emotion changes are all mixed reviews, and emotion
+has eight near-neighbours where sentiment has three well-separated ones. More
+candidate labels packed closer together means more ties available to flip. And
+confidence, a free-form float, changes most of all at 35.3%.
+
+Lesson for the report: "not reproducible" was the right instinct and the wrong
+resolution. Measuring it turned an anecdote into a bounded claim, and the bound
+is narrower than the anecdote implied.
+
+### 2048 tokens is still not always enough
+
+One of the 18 came back `finish_reason=length, completion_tokens=2048/2048`.
+The ceiling problem is reduced — 13 failures in 150 became roughly 1 in 18 —
+not solved. Worth noting that the diagnostic added on Sep 13 is what made this
+immediately legible: the message named the finish reason and the exact token
+count, so there was nothing to infer.
+
+---
+
+## Sep 15 — audit against the actual assignment PDF, and a number I got wrong
+
+Read the assignment PDF and the Notes file properly for the first time. Two
+corrections came out of it, one of them the exact failure the assignment warns
+against.
+
+### Wrong number in the README, caught by checking the file
+
+The README claimed the Step 2 binary run produced "the 95% accuracy" against a
+92.9% baseline, "worth about two points of genuine signal." Neither figure was
+read from the saved output; both were carried from memory.
+
+`results/step2_first100.json` actually says:
+
+    n_attempted              100
+    n_scored                  99   (1 unusable)
+    agreement_with_rating    0.9899  -> 99.0%
+    majority_class_baseline  0.9293 -> 92.9%
+    POSITIVE                 92/92 = 100%
+    NEGATIVE                  6/7  = 85.7%
+
+So the real margin was **6.1 points, not 2**, and the headline was **99.0%, not
+95%**. Corrected, along with the downstream sentence comparing it to the
+balanced run's 38.0-point margin.
+
+This is precisely the standing instruction — *"every number you claim should
+match the saved output; don't publish something you haven't re-checked"* — and
+I broke it by paraphrasing a run from three days earlier instead of opening the
+file. The verification script I wrote on Sep 13 covered every figure sourced
+from `step6_balanced50.json` and never touched `step2_first100.json`, so it
+passed while a wrong number sat two sections above. A checker only checks what
+it is pointed at.
+
+### Port 9000 vs 9001 — a real conflict in the course materials
+
+*Assignment 1 Notes* (Sep 4) says: *"for the OpenAI-compatible endpoint, use the
+following one: http://dobolyi.com:9001/v1"*. This project used **:9000**
+throughout.
+
+Not a mistake, but it was undocumented, which is the actual problem. The case
+for :9000:
+
+- The assignment brief says model calls go through *"an OpenAI-compatible
+  endpoint (e.g., the one we used to set up Hermes Agent)"*, and
+  `class-endpoints.txt` (Sep 10) labels :9000 **Hermes Primary Model**.
+- That same file lists :9001 as `cyankiwi/Qwen3.6-35B-A3B-AWQ-4bit` — a
+  **vision** model, not the text model this task wants.
+- Both were tested directly on Sep 10. :9000 returns clean JSON and reports
+  `cached_tokens`; :9001 injects an ~80-token system prompt and returns a
+  separate reasoning field.
+- The brief's binding requirement is "OpenAI-compatible," which both satisfy.
+
+Now written into the README as an explicit, reasoned deviation rather than a
+silent one. An unexplained port mismatch reads as carelessness; an explained one
+reads as judgment, and the reasoning is real either way.
+
+### Plaud has no transcripts
+
+Checked whether the Sep 10 lecture recording said anything that relaxed the
+report requirements. **Every recording in the account returns an empty
+transcript** — nothing is transcribed, including the three 6418 sessions. So
+there is no verbal record to weigh against the written brief, in either
+direction. The PDF stands as the only authority, and it lists the four report
+questions under "The report should be able to answer, with evidence."
+
+### Full audit against the PDF
+
+Steps 1-7: all present. Final deliverables: report, prompt, scoring script,
+word-list script, dashboard generator, one balanced run's raw output, final
+dashboard — all present. Report format: markdown README, five screenshots,
+data source cited. Submission: public repo, one per person, all code and the
+README in it.
+
+The only genuinely outstanding items are the prose being the agent's rather
+than Jacob's, and the Canvas submission itself.
