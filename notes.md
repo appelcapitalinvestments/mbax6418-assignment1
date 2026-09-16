@@ -757,3 +757,85 @@ README in it.
 
 The only genuinely outstanding items are the prose being the agent's rather
 than Jacob's, and the Canvas submission itself.
+
+---
+
+## Sep 15 (evening) — precision vs recall, and a confidence inversion
+
+Two analyses that should have been run on Sep 13 and were not. Both change what
+the report's central claim should be.
+
+### "Bad at neutral" was the wrong diagnosis
+
+The confusion matrix was only ever read by rows, which gives recall. Reading
+the columns gives precision, and the two tell different stories:
+
+    class      predicted  right  precision   recall
+    POSITIVE          61     49     80.3%    98.0%
+    NEUTRAL           17     12     70.6%    24.0%
+    NEGATIVE          72     46     63.9%    92.0%
+
+**When the model says NEUTRAL it is right 70.6% of the time — better precision
+than it manages on NEGATIVE (63.9%).** It is not failing to recognise mixed
+reviews. It is declining to call them. 17 NEUTRAL predictions against a true 50
+is under-commitment, not incapacity.
+
+And the poles are the mirror image: 98.0% and 92.0% recall bought at 80.3% and
+63.9% precision. NEGATIVE gets predicted 72 times against a true 50, absorbing
+most of the 3-star row. The model is not balanced-but-weak; it is aggressive on
+the poles and conservative in the middle.
+
+This is a materially better answer to question 2 than "NEUTRAL accuracy is
+24%," and it was sitting in the same matrix the whole time. Lesson: a confusion
+matrix read one way is half a result.
+
+### Confidence runs backwards on the class that needs it most
+
+    true class   mean conf when correct   when wrong
+    POSITIVE     0.913 (n=49)             0.700 (n=1)
+    NEGATIVE     0.926 (n=46)             0.625 (n=4)
+    NEUTRAL      0.742 (n=12)             0.867 (n=38)
+
+On the poles, confidence is well calibrated — wrong answers come in visibly
+lower. On 3-star reviews it **inverts**: the model is more confident when it is
+wrong (0.867) than when it is right (0.742).
+
+The mechanism is not mysterious once stated. Correctly identifying a review as
+mixed is an act of hedging, and the model's confidence reflects that hedge.
+Collapsing a mixed review into a pole feels like a clean call, so it reports
+high confidence. The feeling of certainty tracks the shape of the answer, not
+its correctness.
+
+Consequence worth stating plainly: **26 of the 43 errors carried confidence
+>= 0.90, and 8 carried >= 0.95.** A human-review queue fed by low confidence
+would have passed nearly every error straight through, and on NEUTRAL it would
+have actively selected the wrong answers for automatic acceptance. The
+confidence field looks like information and is not.
+
+Earlier I recorded that confidence was "nearly useless as an error signal"
+based on the aggregate gap (0.900 correct vs 0.840 wrong). That understated it.
+The aggregate averaged an inverted relationship together with two calibrated
+ones and produced a number that looked merely weak rather than actively
+misleading. Third time in this project that a pooled metric hid the finding.
+
+### Verification gap closed
+
+The Sep 13 checker only opened `step6_balanced50.json`, which is how a wrong
+Step 2 figure survived it. The script now re-derives all **30** quoted figures
+from **both** results files and confirms each string appears in the README.
+All pass.
+
+### Report provenance stated openly
+
+Replaced the internal "DRAFT — rewrite before submitting" banner with a "How
+this report was produced" section: what the agent did, what Jacob directed, and
+two places where the agent was demonstrably wrong (the Step 2 number carried
+from memory; the confidently wrong prediction about NEUTRAL accuracy falling).
+The assignment is explicitly about working with an agent, so describing that
+work honestly — including its failures — is more appropriate than either hiding
+it or apologising for it.
+
+Added a "what I would do differently" section: hand-label the 50 3-star
+reviews to escape the ground-truth ceiling, require a rationale before the
+label to test the deliberation finding, and drop self-reported confidence in
+favour of logprobs.

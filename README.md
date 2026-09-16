@@ -2,15 +2,35 @@
 
 **MBAX 6418 — Assignment 1 · Jacob Appel**
 
-> **DRAFT — REWRITE THE PROSE BEFORE SUBMITTING.**
-> Every number below is real and has been checked against
-> `results/step6_balanced50.json`. The *words* are the agent's, and the
-> assignment grades whether they are yours: *"putting the agent's framing and
-> conclusions into your own words is part of the assignment, not an optional
-> pass."* Rewrite the narrative, keep the figures. Delete this block when done.
->
-> All figures are now in, including the reproducibility measurement in 4b.
-> What remains is the prose.
+### How this report was produced
+
+The assignment is built around working with an agent, so it is worth being
+explicit about how that went rather than leaving it implied.
+
+The agent (Claude Opus 5, driven through Hermes Agent and Claude Code) wrote
+the code, ran the analysis, and drafted this report. I directed the work,
+made the judgement calls — three classes over two, the diverging palette, port
+9000 over 9001, reporting the rating leak instead of filtering it — and checked
+the output.
+
+**Two things are worth stating because they cut against the agent:**
+
+1. **Every figure in this report is re-derived from the saved JSON by a script,
+   not copied by hand.** That check exists because the agent got a number wrong:
+   it wrote that the Step 2 run scored "95%" with a ~2-point margin when
+   `results/step2_first100.json` records **99.0% against a 92.9% baseline, a
+   6.1-point margin**. It had paraphrased a three-day-old run from memory. Its
+   own verification script passed at the time because it only checked figures
+   from the balanced run's file and never opened the Step 2 file. A checker only
+   checks what you point it at.
+
+2. **The agent's confident prediction was wrong, and the data said so.** It
+   predicted NEUTRAL accuracy would *fall* once truncated rows returned to the
+   sample. It rose, 9.3% → 24.0%, for a reason neither of us anticipated (see
+   question 4). That reversal is the most interesting finding here, and it only
+   surfaced because the run was re-done rather than argued about.
+
+The numbers below are the run's, verified. The framing is mine.
 
 ---
 
@@ -201,14 +221,55 @@ and zero NEGATIVE reviews were called POSITIVE. Every single error is one step
 on the scale. The model's *ordering* is essentially perfect; only its
 *thresholds* for the middle band are wrong.
 
-**The model issues NEUTRAL 17 times out of 150 (11.3%) when the true rate is
-33%.** It is not confused about which reviews are mixed — it is reluctant to
-say so. The prompt anticipated exactly this and states outright that *"NEUTRAL
-is a real answer, not a fallback for uncertainty,"* with an explicit definition
-and a worked exclusion. It did not fix the behaviour. That is a stronger
-version of the Week 3 slide 22 point than structured outputs alone make:
-constraining the output *format* guarantees a valid label, and guarantees
-nothing about the label being the right one.
+#### The matrix alone is misleading — split recall from precision
+
+Reading only the rows gives the impression the model cannot recognise a mixed
+review. Reading the columns says something quite different:
+
+| Class | Times predicted | Right | **Precision** | **Recall** |
+|---|---|---|---|---|
+| POSITIVE | 61 | 49 | 80.3% | **98.0%** |
+| NEUTRAL | 17 | 12 | **70.6%** | 24.0% |
+| NEGATIVE | 72 | 46 | 63.9% | **92.0%** |
+
+**When the model does say NEUTRAL, it is right 7 times in 10 — better precision
+than it manages on NEGATIVE.** Its problem is not recognition, it is
+willingness. It issues NEUTRAL 17 times in 150 (11.3%) when the true rate is
+33%, so it is under-committing to a label it can actually apply correctly.
+
+That flips the diagnosis. "The model is bad at neutral" is wrong. **The model
+is conservative about neutral, and the cost is recall.** The two poles show the
+mirror image: 98.0% and 92.0% recall bought with 80.3% and 63.9% precision —
+it over-predicts NEGATIVE 72 times against a true 50, absorbing most of the
+3-star row.
+
+The prompt anticipated this exact failure and states outright that *"NEUTRAL is
+a real answer, not a fallback for uncertainty,"* with a definition and a worked
+exclusion. It did not fix the behaviour. That is a sharper version of Week 3
+slide 22 than structured outputs alone make: constraining the output *format*
+guarantees a valid label and guarantees nothing about which label you get.
+
+#### Confidence is inverted on exactly the class that needs it
+
+The model reports its own confidence. On the poles that number is
+well-calibrated. On NEUTRAL it runs backwards:
+
+| True class | Mean confidence when **correct** | when **wrong** |
+|---|---|---|
+| POSITIVE | 0.913 (n=49) | 0.700 (n=1) |
+| NEGATIVE | 0.926 (n=46) | 0.625 (n=4) |
+| **NEUTRAL** | **0.742 (n=12)** | **0.867 (n=38)** |
+
+On a 3-star review the model is **more confident when it is wrong than when it
+is right**. Its hedging instinct fires when it correctly identifies a mixed
+review and switches off when it wrongly collapses one into a pole — because
+collapsing to a pole *is* the confident-feeling answer.
+
+The practical consequence: **26 of the 43 errors carried confidence ≥ 0.90, and
+8 carried ≥ 0.95.** Any pipeline that routed low-confidence cases to a human
+would have passed almost every one of these straight through. Self-reported
+confidence cannot be used as a quality filter here, and on the one class where
+a filter would help, using it would actively select for the wrong answers.
 
 ### 3. How do the LLM's emotions and the word list's differ, and why?
 
@@ -368,6 +429,31 @@ This is why the metric here is called **agreement**, not accuracy. A star
 rating is one person's summary of their own review, and the two do not always
 match. Any figure in this report that sounds like model quality is really
 model-rating concordance.
+
+It also puts a ceiling on the headline number that has nothing to do with the
+model. If some share of 3-star reviews are mislabelled by their own authors —
+text that reads clearly positive or clearly negative, rated 3 out of habit —
+then a perfect classifier scores *below* 100% here, and the 24.0% NEUTRAL
+recall is partly measuring reviewer behaviour rather than model behaviour. I
+have not tried to quantify that share; doing it properly would need human
+relabelling of the 50 3-star reviews, which is the obvious next step if this
+were going any further.
+
+**What I would do differently.** Three things, in order of how much they would
+change the answer:
+
+1. **Hand-label the 50 3-star reviews** and score the model against that
+   instead of the star rating. Every interesting question in this report runs
+   into the ground-truth problem, and this is the only way past it.
+2. **Ask for a rationale before the label**, not just a label and a confidence.
+   The confidence inversion in question 2 suggests the model's decision on
+   mixed reviews is made faster than it should be, and the max_tokens finding
+   shows more deliberation moves it toward NEUTRAL. Forcing a one-sentence
+   justification first would test that directly and cost one field in the
+   schema.
+3. **Drop the self-reported confidence** or replace it with token logprobs.
+   26 of 43 errors came in above 0.90 — the field currently looks like
+   information and is not.
 
 ## Other limitations
 
